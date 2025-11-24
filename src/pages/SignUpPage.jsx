@@ -4,6 +4,10 @@ import {auth, db} from "../firebase";
 import { setDoc, doc } from "firebase/firestore";
 
 
+//Future Improvement
+//Set proper fields for organizers, participants,
+//When Organizer signup, set status to "pending approval" in firestore
+
 
 function SignUpPage() {
     const [email, setEmail] = useState("");

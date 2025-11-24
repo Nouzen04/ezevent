@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import {auth, db} from "../firebase";
 import {doc, getDoc} from "firebase/firestore";
 
+//Future Improvement
+//when organizer login, check if status is approved
 
 function LoginPage() {
     const [email, setEmail] = useState("");
