@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import { useAuth } from './components/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   const { user, loading } = useAuth()
@@ -29,7 +30,11 @@ function App() {
               <Route path="/signup" element={<SignUpPage />} />
               <Route
                 path="/admin"
-                element={user ? <AdminPage /> : <Navigate to="/login" />}
+                element={
+                  <ProtectedRoute>
+                    <AdminPage />
+                  </ProtectedRoute>
+                }
               />
             </Routes>
           </div>
