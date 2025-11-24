@@ -1,4 +1,6 @@
 import React from 'react'
+import { signOut } from 'firebase/auth'
+import { auth } from '../firebase'
 import '../css/Sidebar.css'
 
 const menuItems = {
@@ -19,6 +21,17 @@ const menuItems = {
 };
 
 export default function Sidebar({ role }) {
+
+  async function handleLogout() {
+    try{
+      await signOut(auth);
+      window.location.href = "/login";
+      console.log("User logged out successfully!")
+    }catch (error) {
+      console.error("Error Logging out:", error.message)
+    }
+  }
+
   const items = menuItems[role] || [];
 
   return (
@@ -35,7 +48,7 @@ export default function Sidebar({ role }) {
         ))}
       </ul>
       <div className="sidebar-signout">
-        <a href="/signout">Sign Out</a>
+        <a onClick={handleLogout}>Sign Out</a>
       </div>
     </aside>
   );
