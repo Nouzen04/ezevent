@@ -8,7 +8,7 @@ import { useAuth } from './components/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import ParticipantPage from './pages/ParticipantPage'
 import OrganizerPage from './pages/OrganizerPage'
-import ValidateOrganizerPage from './pages/ValidateOrganizerPage'
+import AdminLayout from './layouts/AdminLayout'
 
 function App() {
   const { user, role, loading } = useAuth()
@@ -19,9 +19,9 @@ function App() {
     return '/admin'
   }
 
-  if (loading) {
-    return <div>Loading...</div>
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>
+  // }
 
   return (
     <Router>
@@ -45,19 +45,10 @@ function App() {
               />
 
               <Route
-                path="/admin"
+                path="/admin/*"
                 element={
                   <ProtectedRoute allowedRoles={['admin']}>
-                    <AdminPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/admin/validate-organizers"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <ValidateOrganizerPage />
+                    <AdminLayout />
                   </ProtectedRoute>
                 }
               />

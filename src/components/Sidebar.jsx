@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { signOut } from 'firebase/auth'
 import { auth, db } from '../firebase'
 import { doc, getDoc } from 'firebase/firestore'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import '../css/Sidebar.css'
 
 
@@ -27,6 +27,7 @@ const menuItems = {
 export default function Sidebar({ role }) {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [userData, setUserData] = useState({ name: '', role: '' });
     const [loading, setLoading] = useState(true);
 
@@ -65,6 +66,21 @@ export default function Sidebar({ role }) {
 
   const items = menuItems[role] || [];
 
+  // Helper to check if item should be active (for base routes)
+  const getActiveClassName = ({ isActive }, itemPath) => {
+    // If on base route, highlight first menu item
+    if (role === 'admin' && location.pathname === '/admin' && itemPath === '/admin/management-report') {
+      return 'active';
+    }
+    if (role === 'participant' && location.pathname === '/participant' && itemPath === '/participant/home') {
+      return 'active';
+    }
+    if (role === 'organizer' && location.pathname === '/organizer' && itemPath === '/organizer/create') {
+      return 'active';
+    }
+    return isActive ? 'active' : '';
+  };
+
   return (
     <aside className="sidebar">
         <div className="user-profile">
@@ -73,9 +89,14 @@ export default function Sidebar({ role }) {
         </div>
       <ul>
         {items.map((item) => (
-          <div key={item.path}>
-            <a href={item.path}>{item.label}</a>
-          </div>
+          <li key={item.path}>
+            <NavLink 
+              to={item.path}
+              className={(navData) => getActiveClassName(navData, item.path)}
+            >
+              {item.label}
+            </NavLink>
+          </li>
         ))}
       </ul>
       <div className="sidebar-signout">
