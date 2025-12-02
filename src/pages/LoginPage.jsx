@@ -1,11 +1,9 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {auth, db} from "../firebase";
-import {doc, getDoc} from "firebase/firestore";
-
-//Future Improvement
-//when organizer login, check if status is approved
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import "../css/LoginPage.css";
 
 function LoginPage() {
     const [email, setEmail] = useState("");
@@ -15,74 +13,75 @@ function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("")
-        try{
+        setError("");
+
+        try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            const userDocRef = doc(db, "users", user.uid)
-            const userDoc = await getDoc(userDocRef);
+
+            const userDoc = await getDoc(doc(db, "users", user.uid));
             const role = userDoc.exists() ? userDoc.data().role : null;
 
-            if(role === "admin"){
-                navigate("/admin")
-            } else if(role === "participant") { //Update "Participant" later         
-                navigate("/participant")
-            }else if(role === "organizer") {
-                navigate("/organizer")
-            }else{
-                setError("User role not found. Please Contact Support")
-            }
-            console.log(user);
-            console.log("User logged in successfully");
-            // navigate("/admin");
-            
-
-
-
-        }catch (error){
-            console.log(error.message);
-
-            //display error message on screen
-            setError("Invalid Credentials. Please try again.")
+            if (role === "admin") navigate("/admin");
+            else if (role === "participant") navigate("/participant");
+            else if (role === "organizer") navigate("/organizer");
+            else setError("User role not found. Please contact support.");
+        } catch (error) {
+            setError("Invalid credentials. Please try again.");
         }
-    }
-
+    };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h3>Login</h3>
+        <div className="auth-wrapper">
+            <div className="auth-container">
 
-            <div className="mb-3">
-                <label>Email Address</label>
-                <input
-                type="email"
-                className="form-control"
-                placeholder="Enter email"
-                value = {email}
-                onChange={(e) => setEmail(e.target.value)}
-                ></input>
+                {/* Logo */}
+                <div className="logo-section">
+                    <div className="logo-circle">
+                        <span className="logo-icon calendar-base">📅</span>
+                        <div className="calendar-square"></div>
+                        <span className="checkmark">✔</span>
+                    </div>
+                    <div className="logo-text">Event Management System</div>
+                </div>
+
+                <h2>Sign In</h2>
+
+                {error && <div className="error-message show">{error}</div>}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Email Address</label>
+                        <input
+                            type="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={error ? "error" : ""}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className={error ? "error" : ""}
+                        />
+                    </div>
+
+                    <button type="submit" className="auth-button">Sign In</button>
+                </form>
+
+                <div className="auth-footer">
+                    Don’t have an account?{" "}
+                    <a className="auth-link" href="/signup">Register Here</a>
+                </div>
             </div>
-
-            <div className="mb-3">
-                <label>Password</label>
-                <input
-                type="password"
-                className="form-control"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                />
-            </div>
-
-            <div className="d-grid">
-                <button type="submit" className="btn btn-primary">
-                    Submit
-                </button>
-            </div>
-            <p><a href="/signup">Register Here</a></p>
-
-        </form>
-    )
+        </div>
+    );
 }
 
 export default LoginPage;

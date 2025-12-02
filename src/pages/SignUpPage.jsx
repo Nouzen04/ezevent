@@ -1,136 +1,221 @@
-import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
-import {auth, db} from "../firebase";
+import { auth, db } from "../firebase";
 import { setDoc, doc } from "firebase/firestore";
-
-
-//Future Improvement
-//Set proper fields for organizers, participants,
-//When Organizer signup, set status to "pending approval" in firestore
-
+import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
     const [name, setName] = useState("");
+    const [age, setAge] = useState("");
+    const [gender, setGender] = useState("");
+    const [institution, setInstitution] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [position, setPosition] = useState("");
+    const [companyAddress, setCompanyAddress] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        try{
+        setError("");
+
+        try {
             await createUserWithEmailAndPassword(auth, email, password);
             const user = auth.currentUser;
-            console.log(user);
-            console.log("User registered successfully");
-            if(user){
-                await setDoc(doc(db, "users", user.uid) , {
+
+            if (user) {
+                // Prepare user data object
+                const userData = {
                     uid: user.uid,
-                    email: user.email,
-                    name: name,
-                    role: role,
-                });
-                await signOut(auth);
+                    email,
+                    name,
+                    role,
+                    age,
+                    gender,
+                };
+
+                if (role === "participant") userData.institution = institution;
+                if (role === "organizer") {
+                    userData.companyName = companyName;
+                    userData.position = position;
+                    userData.companyAddress = companyAddress;
+                }
+
+                await setDoc(doc(db, "users", user.uid), userData);
+
+                // Navigate based on role
+                if (role === "participant") navigate("/participant/home");
+                else if (role === "organizer") navigate("/organizer");
+                else if (role === "admin") navigate("/admin");
             }
         } catch (error) {
-            console.log(error.message);
+            setError(error.message);
         }
-    }
+    };
 
-    return(
-        <form onSubmit={handleRegister}>
-            <h3>Sign Up</h3>
+    return (
+        <div className="auth-wrapper">
+            <div className="auth-container">
 
-            <div className="mb-3">
-                <label>Email Address</label>
-                <input
-                type="email"
-                className="form-control"
-                placeholder="Enter email"
-                value = {email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                ></input>
-            </div>
-
-            <div className="mb-3">
-                <label>Password</label>
-                <input
-                type="password"
-                className="form-control"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                />
-            </div>
-
-            <div className="mb-3">
-                <label>Role</label>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="role"
-                    id="roleAdmin"
-                    value="admin"
-                    checked={role === "admin"}
-                    onChange={(e) => setRole(e.target.value)}
-                    />
-                    <label className="form-check-label" htmlFor="roleAdmin">
-                        Admin
-                    </label>
+                {/* Logo Section */}
+                <div className="logo-section">
+                    <div className="logo-circle">
+                        <span className="logo-icon calendar-base">📅</span>
+                        <span className="calendar-square"></span>
+                        <span className="checkmark">✔</span>
+                    </div>
+                    <p className="logo-text">EventEZ</p>
                 </div>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="role"
-                    id="roleParticipant"
-                    value="participant"
-                    checked={role === "participant"}
-                    onChange={(e) => setRole(e.target.value)}
-                    />
-                    <label className="form-check-label" htmlFor="roleParticipant">
-                        Participant
-                    </label>
+
+                <h2>Create Account</h2>
+
+                {error && <div className="error-message show">{error}</div>}
+
+                <form onSubmit={handleRegister}>
+                    {/* Email */}
+                    <div className="form-group">
+                        <label>Email Address</label>
+                        <input
+                            type="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    {/* Password */}
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    {/* Name */}
+                    <div className="form-group">
+                        <label>Name</label>
+                        <input
+                            type="text"
+                            placeholder="Your name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    {/* Age */}
+                    <div className="form-group">
+                        <label>Age</label>
+                        <input
+                            type="number"
+                            placeholder="Your age"
+                            value={age}
+                            onChange={(e) => setAge(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    {/* Gender */}
+                    <div className="form-group">
+                        <label>Gender</label>
+                        <select
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value)}
+                            required
+                        >
+                            <option value="">Select gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    {/* Role */}
+                    <div className="form-group">
+                        <label>Role</label>
+                        <select
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            required
+                        >
+                            <option value="">Select role</option>
+                            <option value="participant">Participant</option>
+                            <option value="organizer">Organizer</option>
+                        </select>
+                    </div>
+
+                    {/* Conditional Fields */}
+                    {role === "participant" && (
+                        <div className="form-group">
+                            <label>Institution</label>
+                            <select
+                                value={institution}
+                                onChange={(e) => setInstitution(e.target.value)}
+                                required
+                            >
+                                <option value="">Select Institution</option>
+                                <option value="UKM">UKM</option>
+                                <option value="UPM">UPM</option>
+                                <option value="UM">UM</option>
+                            </select>
+                        </div>
+                    )}
+
+                    {role === "organizer" && (
+                        <>
+                            <div className="form-group">
+                                <label>Company Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Company name"
+                                    value={companyName}
+                                    onChange={(e) => setCompanyName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Position</label>
+                                <input
+                                    type="text"
+                                    placeholder="Position"
+                                    value={position}
+                                    onChange={(e) => setPosition(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Company Address</label>
+                                <input
+                                    type="text"
+                                    placeholder="Company address"
+                                    value={companyAddress}
+                                    onChange={(e) => setCompanyAddress(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    <button type="submit" className="auth-button">
+                        Sign Up
+                    </button>
+                </form>
+
+                <div className="auth-footer">
+                    Already have an account?{" "}
+                    <a className="auth-link" href="/login">Login</a>
                 </div>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="role"
-                    id="roleOrganizer"
-                    value="organizer"
-                    checked={role === "organizer"}
-                    onChange={(e) => setRole(e.target.value)}
-                    />
-                    <label className="form-check-label" htmlFor="roleOrganizer">
-                        Organizer
-                    </label>
-                </div>
             </div>
-
-            <div className="mb-3">
-                <label>Name</label>
-                <input
-                type="text"
-                className="form-control"
-                placeholder="Your name"
-                onChange={(e) => setName(e.target.value)}
-                required
-                >
-                </input>
-            </div>
-
-            <div className="d-grid">
-                <button type="submit" className="btn btn-primary">
-                    Sign Up
-                </button>
-            </div>
-            <p><a href="/login">Login</a></p>
-
-        </form>
-    )
+        </div>
+    );
 }
 
-export default SignUpPage
+export default SignUpPage;

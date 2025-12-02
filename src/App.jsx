@@ -3,12 +3,12 @@ import AdminPage from './pages/AdminPage'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
-import LandingPage from './pages/LandingPage' 
+import LandingPage from './pages/LandingPage'
 import { useAuth } from './components/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
-import ParticipantPage from './pages/ParticipantPage'
 import OrganizerPage from './pages/OrganizerPage'
 import AdminLayout from './layouts/AdminLayout'
+import ParticipantsLayout from './layouts/ParticipantLayout'
 
 function App() {
   const { user, role, loading } = useAuth()
