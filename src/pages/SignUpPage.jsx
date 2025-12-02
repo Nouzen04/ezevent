@@ -17,6 +17,7 @@ function SignUpPage() {
     const [companyAddress, setCompanyAddress] = useState("");
     const [matricNumber, setMatricNumber] = useState("");
     const [error, setError] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
@@ -39,28 +40,29 @@ function SignUpPage() {
                 };
 
                 if (role === "participant") {
-                    userData.institution = institution;
-                    userData.matricNumber = matricNumber;
+                    userData.participant = {
+                        institution: institution,
+                        matricNumber: matricNumber
+                    };
                 }
                 if (role === "organizer") {
-                    userData.companyName = companyName;
-                    userData.position = position;
-                    userData.companyAddress = companyAddress;
-                    userData.verified = false;
+                    userData.organizer = {
+                        companyName: companyName,
+                        position: position,
+                        companyAddress: companyAddress,
+                        verified: false
+                    };
                 }
 
                 await setDoc(doc(db, "users", user.uid), userData);
 
                 // Navigate based on role
-                if (role === "participant") {
-                    navigate("/participant/home");
-                } else if (role === "organizer") {
-                    // Send newly registered organizers to the organizer area
-                    // (root route inside OrganizerLayout shows their default page)
-                    navigate("/organizer/home");
-                } else if (role === "admin") {
-                    navigate("/admin");
-                }
+                if (role === "participant") navigate("/participant/events");
+                else if (role === "organizer") navigate("/organizer/events");
+                else if (role === "admin") navigate("/admin/");
+                else setError("User role not found. Please contact support.");
+
+                window.location.reload();
             }
         } catch (error) {
             setError(error.message);
@@ -130,6 +132,18 @@ function SignUpPage() {
                             placeholder="Your age"
                             value={age}
                             onChange={(e) => setAge(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    {/* Phone Number */}
+                    <div className="form-group">
+                        <label>Phone Number</label>
+                        <input
+                            type="tel"
+                            placeholder="Your phone number"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                             required
                         />
                     </div>
