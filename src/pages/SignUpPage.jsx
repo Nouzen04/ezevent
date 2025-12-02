@@ -50,17 +50,19 @@ function SignUpPage() {
                         companyName: companyName,
                         position: position,
                         companyAddress: companyAddress,
-                        verified: false
+                        verified: "Pending"
                     };
                 }
 
                 await setDoc(doc(db, "users", user.uid), userData);
 
                 // Navigate based on role
-                if (role === "participant") navigate("/participant/*");
-                else if (role === "organizer") navigate("/organizer/*");
-                else if (role === "admin") navigate("/admin/*");
+                if (role === "participant") navigate("/participant/events");
+                else if (role === "organizer") navigate("/organizer/events");
+                else if (role === "admin") navigate("/admin/");
                 else setError("User role not found. Please contact support.");
+
+                window.location.reload();
             }
         } catch (error) {
             setError(error.message);
