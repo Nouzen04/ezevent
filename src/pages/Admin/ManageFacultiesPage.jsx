@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { collection, doc, deleteDoc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import '../css/ManageFaculties.css';
+import '../../css/ManageFaculties.css';
 
 export default function ManageFacultiesPage() {
   const { universityId } = useParams();

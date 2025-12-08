@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
@@ -11,14 +11,36 @@ function SignUpPage() {
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [gender, setGender] = useState("");
-     const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [institution, setInstitution] = useState("");
     const [companyName, setCompanyName] = useState("");
     const [position, setPosition] = useState("");
     const [companyAddress, setCompanyAddress] = useState("");
     const [matricNumber, setMatricNumber] = useState("");
-        const [error, setError] = useState("");
+    const [universities, setUniversities] = useState([]);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUniversities = async () => {
+            try {
+                const universitiesCollection = collection(db, 'universities');
+                const universitiesSnapshot = await getDocs(universitiesCollection);
+
+                const universitiesList = universitiesSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().universityName
+                }));
+
+                setUniversities(universitiesList);
+            } catch (error) {
+                console.error('Error fetching universities:', error);
+            }
+        };
+
+        fetchUniversities();
+    }, []);
+
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -182,33 +204,29 @@ function SignUpPage() {
                     {/* Participant Fields */}
                     {role === "participant" && (
                         <>
-                        <div className="form-group">
-                            <label>Institution</label>
-                            <select
-                                value={institution}
-                                onChange={(e) => setInstitution(e.target.value)}
-                                required
-                            >
-                                <option value="">Select Institution</option>
-                                <option value="UKM">UKM</option>
-                                <option value="UPM">UPM</option>
-                                <option value="UM">UM</option>
-                            </select>
-                        </div>
+                            <div className="form-group">
+                                <label>Institution</label>
+                                <select value={institution} onChange={(e) => setInstitution(e.target.value)} required>
+                                    <option value="">Select Institution</option>
+                                    {universities.map((uni) => (
+                                        <option key={uni.id} value={uni.id}>{uni.name}</option>
+                                    ))}
+                                </select>
+                            </div>
 
-                        <div className="form-group">
-                        <label>Matric Number</label>
-                        <input
-                            type="test"
-                            placeholder="Your Matric Number"
-                            value={matricNumber}
-                            onChange={(e) => setMatricNumber(e.target.value)}
-                            required
-                        />
-                    </div>
+                            <div className="form-group">
+                                <label>Matric Number</label>
+                                <input
+                                    type="test"
+                                    placeholder="Your Matric Number"
+                                    value={matricNumber}
+                                    onChange={(e) => setMatricNumber(e.target.value)}
+                                    required
+                                />
+                            </div>
                         </>
                     )}
-                    
+
                     {/* Organizer Fields */}
                     {role === "organizer" && (
                         <>
