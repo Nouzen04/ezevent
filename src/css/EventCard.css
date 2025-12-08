@@ -1,0 +1,61 @@
+/* EventCard.css */
+
+.event-card {
+  background-color: #ffffff;
+  border-radius: 12px; /* Smooth rounded corners */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Subtle shadow depth */
+  padding: 24px;
+  display: flex;
+  flex-direction: column; /* Stack content top to bottom */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e0e0e0;
+  height: 100%; /* Ensures all cards in a row are the same height */
+  box-sizing: border-box; /* Includes padding in width calculation */
+}
+
+/* Hover effect */
+.event-card:hover {
+  transform: translateY(-4px); /* Lifts up slightly */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  border-color: #d0d0d0;
+}
+
+/* Typography inside the card */
+.event-card h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  color: #222;
+  font-weight: 700;
+}
+
+.event-card p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.event-card strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* The Action Button */
+.event-card button.auth-button {
+  margin-top: auto; /* Pushes button to the bottom */
+  background-color: #2563eb; /* Primary Blue */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+.event-card button.auth-button:hover {
+  background-color: #1d4ed8; /* Darker blue */
+}

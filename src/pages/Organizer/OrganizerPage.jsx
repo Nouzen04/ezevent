@@ -1,6 +1,6 @@
 import React from 'react'
 import Sidebar from '../../components/Sidebar'
-import '../css/AdminPage.css'
+import '../../css/AdminPage.css'
 
 export default function OrganizerPage() {
   return (

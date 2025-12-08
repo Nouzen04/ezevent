@@ -21,8 +21,8 @@ const menuItems = {
 
   ],
   organizer: [
-    { label: "My Events", path: "/organizer/events" },
-    { label: "Create Event", path: "/organizer/create" },
+    { label: "My Events", path: "/organizer/my-events" },
+    { label: "Create Event", path: "/organizer/create-event" },
     
   ]
 };

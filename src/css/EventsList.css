@@ -1,0 +1,26 @@
+/* EventsLayout.css - Only layout concerns remain here */
+
+.events-container {
+  display: flex;
+  flex-direction: column; 
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', sans-serif;
+  width: 100%;
+}
+
+.events-container h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.events-grid {
+  display: grid;
+  /* Responsive columns */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  gap: 24px;
+  width: 100%;
+}

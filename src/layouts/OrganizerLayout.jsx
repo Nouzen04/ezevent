@@ -1,8 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import { Routes, Route } from "react-router-dom";
 import ViewEventsPage from "../pages/ViewEventPage";
-import "../css/OrganizerPage.css";
-
+import OrganizerPage from "../pages/Organizer/OrganizerPage";
 function OrganizerLayout() {
   return (
     <div className="organizer-container">
@@ -10,9 +9,9 @@ function OrganizerLayout() {
 
       <div className="organizer-content">
         <Routes>
-          <Route path="" element={<ViewEventsPage />} />
-          <Route path="home" element={<ViewEventsPage />} />
-          <Route path="events" element={<ViewEventsPage />} />
+          <Route path="" element={<OrganizerPage />} />
+          <Route path="my-events" element={<OrganizerPage />} />
+          <Route path="create-event" element={<OrganizerPage />} />
         </Routes>
       </div>
     </div>
