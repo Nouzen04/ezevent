@@ -67,7 +67,10 @@ export default function Sidebar({ role }) {
     }
   }
 
-  const items = menuItems[role] || [];
+  // Prefer the role from the fetched user document when available;
+  // fall back to the role prop passed by the layout.
+  const effectiveRole = userData.role || role;
+  const items = menuItems[effectiveRole] || [];
 
   // Helper to check if item should be active (for base routes)
   const getActiveClassName = ({ isActive }, itemPath) => {

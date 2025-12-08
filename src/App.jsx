@@ -1,3 +1,4 @@
+
 import './App.css'
 import AdminPage from './pages/Admin/AdminPage'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
@@ -9,6 +10,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminLayout from './layouts/AdminLayout'
 import ParticipantsLayout from './layouts/ParticipantLayout'
 import OrganizerLayout from './layouts/OrganizerLayout'
+import CreateEvent from './pages/Organizer/CreateEventPage'
+import CreateEventPage from './pages/Organizer/CreateEventPage'
 
 function App() {
   const { user, role, loading } = useAuth()
@@ -26,7 +29,7 @@ function App() {
 
   return (
     <Router>
-      <Routes>
+       <Routes>
         <Route
           path="/"
           element={<LandingPage />}
@@ -84,7 +87,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-      </Routes>
+      </Routes> 
     </Router>
   )
 }

@@ -1,5 +1,6 @@
 import React from "react";
-import "../css/EventCard.css"; 
+import "../css/EventCard.css";
+import testImage from "../assets/icons/event.jpg";
 
 const formatDate = (dateObj) => {
   if (!dateObj) return "Date not specified";
@@ -12,8 +13,13 @@ const formatDate = (dateObj) => {
 export default function EventCard({event, onClick, buttonText = "Register"}) {
   return (
     <div className="event-card">
-      <h3>{event.eventName}</h3>
+
+      <div className="img-card">
+        /* <img src={event.imageUrl} alt={event.eventName} /> */
+      </div>
       
+      <h3>{event.eventName}</h3>
+
       <p>
         <strong>Date:</strong> {formatDate(event.date)}
       </p>

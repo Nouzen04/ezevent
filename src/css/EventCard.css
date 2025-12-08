@@ -9,8 +9,10 @@
   flex-direction: column; /* Stack content top to bottom */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid #e0e0e0;
-  height: 100%; /* Ensures all cards in a row are the same height */
+  height: auto; /* Ensures all cards in a row are the same height */
+  width: 100%;
   box-sizing: border-box; /* Includes padding in width calculation */
+  margin-top: 20px;
 }
 
 /* Hover effect */
@@ -43,7 +45,7 @@
 
 /* The Action Button */
 .event-card button.auth-button {
-  margin-top: auto; /* Pushes button to the bottom */
+  margin-top: 24px; /* Pushes button to the bottom */
   background-color: #2563eb; /* Primary Blue */
   color: white;
   border: none;
@@ -54,6 +56,19 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   width: 100%;
+}
+
+.img-card {
+  height: 220px;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  margin: 0 0 16px 0;
+  overflow: hidden;
+}
+.img-card img {
+  width: 100%;
+  height: 100%; 
+  object-fit: contain;
 }
 
 .event-card button.auth-button:hover {
