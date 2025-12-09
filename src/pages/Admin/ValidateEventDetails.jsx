@@ -2,23 +2,22 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
-import { db } from "../../firebase"; // Ensure this path is correct
+import { db } from "../../firebase"; 
 import '../../css/ValidateEventDetails.css';
 
 export default function ValidateEventDetails() {
-    const { id } = useParams(); // This is the Event Document ID
+    const { id } = useParams(); 
     const navigate = useNavigate();
 
     const [eventData, setEventData] = useState(null);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false); // New state for button loading
+    const [isSubmitting, setIsSubmitting] = useState(false); 
 
-    const SERVICE_ID = "service_ezevent"; // Match the first file's service ID
-    const TEMPLATE_ID = "template_3lwo8n3"; // Create a new template ID for events
-    const PUBLIC_KEY = "tbsCwOVG73gOBa1XX"; // Match the first file's public key
+    const SERVICE_ID = "service_ezevent"; 
+    const TEMPLATE_ID = "template_3lwo8n3"; 
+    const PUBLIC_KEY = "tbsCwOVG73gOBa1XX"; 
 
-    // Helper function to format Firestore Timestamp objects
     const formatTimestamp = (timestamp) => {
         if (timestamp && typeof timestamp.toDate === 'function') {
             return timestamp.toDate().toLocaleString();
@@ -27,7 +26,7 @@ export default function ValidateEventDetails() {
     };
 
     useEffect(() => {
-        console.log("Current URL ID:", id); // Debugging: Check if ID exists
+        console.log("Current URL ID:", id); 
 
         const fetchEventAndUserDetails = async () => {
             try {
@@ -79,7 +78,6 @@ export default function ValidateEventDetails() {
         setIsSubmitting(true);
         let reason = '';
 
-        // Prompt for a reason if declining
         if (status === 'Declined') {
             reason = prompt(`Please provide a reason for declining the event: ${eventData.eventName}`);
             if (!reason) {
@@ -95,7 +93,7 @@ export default function ValidateEventDetails() {
             // 1. Update Event Status
             const eventRef = doc(db, 'events', eventData.id);
             await updateDoc(eventRef, {
-                status: status, // 'Accepted' or 'Declined'
+                status: status, 
             });
             setEventData(prev => ({ ...prev, status: status }));
             console.log(`Event status updated to: ${status}`);
@@ -108,7 +106,7 @@ export default function ValidateEventDetails() {
                 name: userData.name,
                 status: status,
                 reason: reason,
-                validation_link: window.location.href // Send the admin validation link for context/review
+                validation_link: window.location.href 
             };
 
             await emailjs.send(SERVICE_ID, TEMPLATE_ID, emailParams, PUBLIC_KEY)
@@ -119,7 +117,6 @@ export default function ValidateEventDetails() {
                     console.error('Failed to send event validation email. Error:', err);
                 });
 
-            // Optionally redirect after a brief success message
             setTimeout(() => navigate('/admin/validate-events'), 1500);
 
         } catch (error) {
@@ -138,7 +135,6 @@ export default function ValidateEventDetails() {
         <div className="validate-event-container">
             <h2>Validate Event Details</h2>
 
-            {/* Back Button */}
             <div className="back-btn-wrapper">
                 <button
                     type="button"
@@ -151,12 +147,9 @@ export default function ValidateEventDetails() {
 
             <p className="details-line" style={{ fontWeight: 'bold' }}>Event ID: {eventData.id}</p>
 
-
-            {/* Display Event Information */}
             <div className="event-details-card">
                 <h3>Event Information</h3>
                 {eventData.Image && ( 
-     
                     <div className="event-image-wrapper">
                         <p className="details-line"><strong>Event Image:</strong></p>
                         <img
@@ -183,7 +176,6 @@ export default function ValidateEventDetails() {
                 </p>
             </div>
 
-            {/* Display User/Organizer Information */}
             {userData ? (
                 <div className="organizer-details-card">
                     <h3>Organizer Information</h3>
@@ -191,7 +183,6 @@ export default function ValidateEventDetails() {
                     <p className="details-line"><strong>Email:</strong> {userData.email}</p>
                     <p className="details-line"><strong>Phone:</strong> {userData.phoneNumber}</p>
 
-                    {/* Accessing the nested 'organizer' map */}
                     {userData.organizer && (
                         <div style={{ marginTop: '10px' }}>
                             <h4>Company Details (Organizer Role)</h4>
@@ -199,17 +190,23 @@ export default function ValidateEventDetails() {
                             <p className="details-line"><strong>Position:</strong> {userData.organizer.position}</p>
                             <p className="details-line"><strong>Address:</strong> {userData.organizer.companyAddress}</p>
                             <p className="details-line"><strong>Validation Timestamp:</strong> {formatTimestamp(userData.organizer.validationTimestamp)}</p>
+                            
+                            {/* UPDATED SECTION START */}
                             <p className="details-line">
                                 <strong>Organizer Status:</strong>
                                 <span
-                                    className={`status-tag ${userData.organizer.status === 'Accepted' ? 'status-accepted' :
-                                            userData.organizer.status === 'Declined' ? 'status-declined' :
-                                                'status-pending'
-                                        }`}
+                                    className={`status-tag ${
+                                        userData.organizer.verified === 'Accepted' ? 'status-accepted' :
+                                        (userData.organizer.verified === 'Declined' || userData.organizer.verified === 'Rejected') ? 'status-declined' :
+                                        'status-pending'
+                                    }`}
                                 >
-                                    {userData.organizer.status || 'Pending'}
+                                    {/* Changed from .status to .verified based on DB screenshot */}
+                                    {userData.organizer.verified || 'Pending'}
                                 </span>
                             </p>
+                            {/* UPDATED SECTION END */}
+                            
                         </div>
                     )}
                 </div>
@@ -217,7 +214,6 @@ export default function ValidateEventDetails() {
                 <p>User data could not be loaded for the event organizer.</p>
             )}
 
-            {/* Action Buttons */}
             <div className="action-buttons-group">
                 <button
                     onClick={() => handleVerify('Accepted')}
