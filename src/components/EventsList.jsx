@@ -63,23 +63,35 @@ export default function EventsList({
 
                     // Logic: Participant (Available Events)
                     else if (userRole === "participant") {
+                        // 1. Fetch the user's existing registrations
+                        const regQuery = query(
+                            collection(db, "registrations"), 
+                            where("userId", "==", userId)
+                        );
+                        const regSnapshot = await getDocs(regQuery);
+                        const registeredEventIds = regSnapshot.docs.map(doc => doc.data().eventId);
+
                         const currentDate = new Date();
                         
+                        // 2. Filter: Must be Future Date AND Not in Registered List
                         eventsData = rawEvents.filter(event => {
-                            if (!event.date) return false; // Safety check if date is missing
-
-                            // 1. Handle Firestore Timestamp (has .toDate() method)
+                            // A. Check Date
+                            if (!event.date) return false; 
+                            
                             let eventDate;
                             if (typeof event.date.toDate === 'function') {
-                                eventDate = event.date.toDate();
-                            } 
-                            // 2. Handle String or Standard Date object
-                            else {
-                                eventDate = new Date(event.date);
+                                eventDate = event.date.toDate(); // Handle Firestore Timestamp
+                            } else {
+                                eventDate = new Date(event.date); // Handle String/Date
                             }
 
-                            // 3. Compare Dates
-                            return eventDate > currentDate; 
+                            if (eventDate <= currentDate) return false; // Hide past events
+
+                            // B. Check Registration Status
+                            // If the event ID is in the registered list, hide it (return false)
+                            if (registeredEventIds.includes(event.id)) return false;
+
+                            return true;
                         });
                     }
 

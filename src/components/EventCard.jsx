@@ -25,7 +25,7 @@ export default function EventCard({event, onClick, buttonText = "Register"}) {
       </p>
       
       <p>
-        <strong>Location:</strong> {event.facultyid}
+        <strong>Location:</strong> {event.universityId}
       </p>
       
       <p>{event.description}</p>
