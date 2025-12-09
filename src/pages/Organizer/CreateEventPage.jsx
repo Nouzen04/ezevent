@@ -19,7 +19,8 @@ export default function CreateEvent() {
         faculty: '',
         address: '',
         category: '',
-        description: ''
+        description: '',
+        price: ''
     });
 
     function handleImageChange(e) {
@@ -64,9 +65,10 @@ export default function CreateEvent() {
                 categoryid: form.category,
                 status: 'pending',
                 description: form.description,
+                createdAt: serverTimestamp(),
+                price: form.price,
                 QR: '',
                 noparticipants: 0,
-                createdAt: serverTimestamp()
             };
 
             // If an image file was selected, upload it to Firebase Storage
@@ -104,7 +106,7 @@ export default function CreateEvent() {
             alert('Event created successfully');
 
             // Optionally reset form
-            setForm({ eventName: '', date: '', university: '', faculty: '', address: '', category: '', description: '' });
+            setForm({ eventName: '', date: '', university: '', faculty: '', address: '', category: '', description: '',price: '' });
             setImagePreview(null);
             setImageFile(null);
         } catch (err) {
@@ -163,6 +165,8 @@ export default function CreateEvent() {
                 image: downloadURL,
                 eventid: pendingEventId,
                 userid: user.uid,
+                imageQR: downloadURL,
+                QRId: pendingQrId,
                 createdAt: serverTimestamp(),
             });
             
@@ -248,6 +252,11 @@ export default function CreateEvent() {
                 <label className="ce-field">
                     <span className="ce-label">Description</span>
                     <textarea className="ce-textarea" placeholder="Value" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                </label>
+
+                <label className="ce-field">
+                    <span className="ce-label">Price</span>
+                    <input className="ce-input" placeholder="Price" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
                 </label>
 
                 <div className="ce-field">

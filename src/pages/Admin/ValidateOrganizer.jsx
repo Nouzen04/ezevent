@@ -10,7 +10,7 @@ export default function ValidateOrganizer() {
   const [error, setError] = useState(null);
   const [selectedOrganizer, setSelectedOrganizer] = useState(null);
 
-  const SERVICE_ID = "service_ezevent"; 
+  const SERVICE_ID = "service_ezevent";
   const TEMPLATE_ID = "template_2ofdmnb";
   const PUBLIC_KEY = "tbsCwOVG73gOBa1XX";
 
@@ -38,7 +38,7 @@ export default function ValidateOrganizer() {
       }
 
 
-     
+
     };
     fetchOrganizers();
   }, []);
@@ -48,26 +48,26 @@ export default function ValidateOrganizer() {
 
   const handleValidation = async (organizerId, currentStatus, email, name) => {
     const newStatus = prompt(`Current: ${currentStatus}. Type 'accept' or 'decline':`).toLowerCase();
-    
+
     if (newStatus !== 'accept' && newStatus !== 'decline') {
       alert('Invalid status. Please type "accept" or "decline".');
       return;
     }
-    
+
 
     let rejectionReason = '';
 
     if (newStatus === 'accept' || newStatus === 'decline') {
       const statusToSet = newStatus === 'accept' ? 'Accepted' : 'Declined';
-      
-     if (newStatus === 'decline') {
+
+      if (newStatus === 'decline') {
         rejectionReason = prompt('Please provide a reason for declining the organizer:');
         if (!rejectionReason) {
           alert('Decline reason is required.');
           return;
         }
-     }
-      
+      }
+
       try {
         const organizerRef = doc(db, 'users', organizerId);
         await updateDoc(organizerRef, {
@@ -77,15 +77,15 @@ export default function ValidateOrganizer() {
 
         setOrganizers(prev =>
           prev.map(org =>
-            org.id === organizerId 
-            ? { 
+            org.id === organizerId
+              ? {
                 ...org, // 1. Keep the outer user data (id, email, name, etc.)
-                organizer: { 
-                    ...org.organizer, // 2. Keep the existing company info
-                    verified: statusToSet // 3. Update ONLY the verified status
-                } 
-              } 
-            : org
+                organizer: {
+                  ...org.organizer, // 2. Keep the existing company info
+                  verified: statusToSet // 3. Update ONLY the verified status
+                }
+              }
+              : org
           )
         );
         alert(`Organizer ${statusToSet}.`);
@@ -94,11 +94,11 @@ export default function ValidateOrganizer() {
         alert('Failed to update status.');
       }
 
-       // 5. SEND EMAIL VIA EMAILJS (Client Side)
+      // 5. SEND EMAIL VIA EMAILJS (Client Side)
       const emailParams = {
-        email: email,      
-        name: name,           
-        status: statusToSet,  
+        email: email,
+        name: name,
+        status: statusToSet,
         reason: rejectionReason || "All data correct."
       };
 
@@ -115,66 +115,68 @@ export default function ValidateOrganizer() {
 
   return (
     <div className="manage-organizer">
-      <h1>Manage Organizers</h1>
+      <h1>Validate Organizers</h1>
 
       <section className="organizer-list-section">
         <h2>Organizers List</h2>
         {loading ? (
           <p>Loading Organizers...</p>
         ) : (
-          <table className="organizer-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Phone Number</th>
-                <th>Company Name</th>
-                <th>Company Address</th>
-                <th>Position</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {organizers.length === 0 ? (
+          <div className='table-container'>
+            <table className="organizer-table">
+              <thead>
                 <tr>
-                  <td colSpan="3" style={{ textAlign: 'center', padding: '2rem' }}>
-                    No Organizers found
-                  </td>
+                  <th>ID</th>
+                  <th>Email</th>
+                  <th>Name</th>
+                  <th>Phone Number</th>
+                  <th>Company Name</th>
+                  <th>Company Address</th>
+                  <th>Position</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              ) : (
-                organizers.map((organizer) => (
-                  <tr key={organizer.id}>
-                    <td>{organizer.id}</td>
-                    <td>{organizer.email || 'N/A'}</td>
-                    <td>{organizer.name || 'N/A'}</td>
-                    <td>{organizer.phoneNumber || 'N/A'}</td>
-                    <td>{organizer.organizer.companyName || 'N/A'}</td>
-                    <td>{organizer.organizer.companyAddress || 'N/A'}</td>
-                    <td>{organizer.organizer.position || 'N/A'}</td>
-                    <td>
-                      <span className={`status-tag ${organizer.organizer.verified ? organizer.organizer.verified.toLowerCase() : 'pending'}`}>
-                         {organizer.organizer.verified || 'Pending'}
-                       </span>
-                       </td>
-                    <td>
-                      <button 
-                        type="button"
-                        className="action-btn edit-btn"
-                        onClick={() => handleValidation(organizer.id, organizer.verified || 'Pending',
-                        organizer.email, 
-                        organizer.name, 
-                        )}
-                      >
-                        Validate
-                      </button>
+              </thead>
+              <tbody>
+                {organizers.length === 0 ? (
+                  <tr>
+                    <td colSpan="3" style={{ textAlign: 'center', padding: '2rem' }}>
+                      No Organizers found
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  organizers.map((organizer) => (
+                    <tr key={organizer.id}>
+                      <td>{organizer.id}</td>
+                      <td>{organizer.email || 'N/A'}</td>
+                      <td>{organizer.name || 'N/A'}</td>
+                      <td>{organizer.phoneNumber || 'N/A'}</td>
+                      <td>{organizer.organizer.companyName || 'N/A'}</td>
+                      <td>{organizer.organizer.companyAddress || 'N/A'}</td>
+                      <td>{organizer.organizer.position || 'N/A'}</td>
+                      <td>
+                        <span className={`status-tag ${organizer.organizer.verified ? organizer.organizer.verified.toLowerCase() : 'pending'}`}>
+                          {organizer.organizer.verified || 'Pending'}
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="action-btn edit-btn"
+                          onClick={() => handleValidation(organizer.id, organizer.verified || 'Pending',
+                            organizer.email,
+                            organizer.name,
+                          )}
+                        >
+                          Validate
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 

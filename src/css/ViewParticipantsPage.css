@@ -1,6 +1,7 @@
 .view-participants {
   padding: 2rem;
-  max-width: 1200px;
+  /* Updated: Use 98% width to fit more columns comfortably */
+  max-width: 98%; 
   margin: 0 auto;
 }
 
@@ -11,7 +12,7 @@
   font-weight: 600;
 }
 
-.participant-list-section{
+.participant-list-section {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 1.5rem;
@@ -19,17 +20,25 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.participant-list-section h2{
+.participant-list-section h2 {
   color: #333;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
+/* Updated: Removed overflow/scroll settings */
+.table-container {
+  width: 100%;
+  overflow-x: visible; 
+}
+
 .participants-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+  /* Updated: Forces table to respect 100% width and not expand */
+  table-layout: fixed; 
 }
 
 .participants-table thead {
@@ -42,16 +51,37 @@
   font-weight: 600;
   color: #333;
   border-bottom: 2px solid #ddd;
+  white-space: nowrap; /* Keep headers on one line */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* Optional: Define specific widths for critical columns to ensure layout looks good */
+.participants-table th:nth-child(1) { width: 10%; }
+.participants-table th:nth-child(2) { width: 15%; }
+.participants-table th:last-child { width: 120px; } 
 
 .participants-table td {
   padding: 1rem;
   border-bottom: 1px solid #e5e5e5;
   color: #555;
+  vertical-align: top; /* Aligns text to top when wrapping occurs */
+  
+  /* Updated: CRITICAL settings to force text wrapping */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all; /* Ensures long IDs break to the next line */
 }
 
 .participants-table tbody tr:hover {
   background-color: #f9f9f9;
 }
+
+.participants-table td:first-child {
+  font-size: 0.85rem; 
+  color: #777;
+}
+
+
 
 

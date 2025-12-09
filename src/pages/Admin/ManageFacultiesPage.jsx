@@ -114,15 +114,17 @@ const isValidId = (value) => {
 
   return (
     <div className="manage-faculties">
+      <h1>Manage Faculties - {universityName}</h1>
       <div className="faculties-header">
+        <br></br>
         <button 
           type="button" 
           className="back-btn"
           onClick={handleBackToUniversities}
         >
-          ← Back to Universities
+          Back to Universities
         </button>
-        <h1>Manage Faculties - {universityName}</h1>
+        
       </div>
 
       <section className="faculties-list-section">

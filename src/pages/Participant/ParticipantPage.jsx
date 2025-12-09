@@ -1,24 +1,37 @@
-import React from 'react'
-import Sidebar from '../../components/Sidebar'
-import '../../css/AdminPage.css'
-import EventCard from '../../components/EventCard'
-
+import React from "react";
+import EventsList from "../../components/EventsList";
+import { useAuth } from "../../components/AuthContext";
+import {useNavigate} from "react-router-dom";
 export default function ParticipantPage() {
+
+  const navigate = useNavigate();
+
+  const handleClick = async (event) => {
+    console.log("Getting Event Details:", event.id);
+    navigate(`/participant/events/${event.id}`);
+  }
+
+    
+
   return (
-    <div className="admin-container">
-      <Sidebar role="participant" />
-      <main className="admin-content">
-        <h1>ONGOING EVENT</h1>
-        <EventCard event={{
-          eventName: "Sample Event", 
-          date: {seconds: 1711929600}, 
-          facultyid: "Engineering", 
-          description: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-          }} 
-          onClick={() => {}} 
+    <div className="participant-container">
+      <main className="participant-content">
+        <div className="participant-header">
+          <div className="participant-profile">
+            <h1>Available Events</h1>
+          </div>
+          <div className="participant-divider"></div>
+        </div>
+
+        <div className="participant-main">
+          <EventsList
+            collectionName="events"
+            onClickAction={handleClick}
+            ActionText="Register"
           />
+        </div>
       </main>
     </div>
   )
-}
 
+}

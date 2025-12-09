@@ -35,7 +35,7 @@ export default function ViewParticipants() {
       }
 
 
-     
+
     };
     fetchParticipants();
   }, []);
@@ -50,45 +50,45 @@ export default function ViewParticipants() {
         {loading ? (
           <p>Loading Participants...</p>
         ) : (
-          <table className="participants-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Phone Number</th>
-                <th>Gender</th>
-                <th>Institution</th>
-                <th>Matric Number</th>
-
-              </tr>
-            </thead>
-            <tbody>
-              {participant.length === 0 ? (
+          <div className='table-container'>
+            <table className="participants-table">
+              <thead>
                 <tr>
-                  <td colSpan="3" style={{ textAlign: 'center', padding: '2rem' }}>
-                    No Participants found
-                  </td>
+                  <th>ID</th>
+                  <th>Email</th>
+                  <th>Name</th>
+                  <th>Age</th>
+                  <th>Phone Number</th>
+                  <th>Gender</th>
+                  <th>Institution</th>
+                  <th>Matric Number</th>
+
                 </tr>
-              ) : (
-                participant.map((participant) => (
-                  <tr key={participant.id}>
-                    <td>{participant.id}</td>
-                    <td>{participant.email || 'N/A'}</td>
-                    <td>{participant.name || 'N/A'}</td>
-                    <td>{participant.age || 'N/A'}</td>
-                    <td>{participant.phoneNumber || 'N/A'}</td>
-                    <td>{participant.gender || 'N/A'}</td>
-                    <td>{participant.participant.institution || 'N/A'}</td>
-                    <td>{participant.participant.matricNumber || 'N/A'}</td>
-                    <td>
+              </thead>
+              <tbody>
+                {participant.length === 0 ? (
+                  <tr>
+                    <td colSpan="3" style={{ textAlign: 'center', padding: '2rem' }}>
+                      No Participants found
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  participant.map((participant) => (
+                    <tr key={participant.id}>
+                      <td>{participant.id}</td>
+                      <td>{participant.email || 'N/A'}</td>
+                      <td>{participant.name || 'N/A'}</td>
+                      <td>{participant.age || 'N/A'}</td>
+                      <td>{participant.phoneNumber || 'N/A'}</td>
+                      <td>{participant.gender || 'N/A'}</td>
+                      <td>{participant.participant.institution || 'N/A'}</td>
+                      <td>{participant.participant.matricNumber || 'N/A'}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 

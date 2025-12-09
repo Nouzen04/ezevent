@@ -1,7 +1,7 @@
 import React from "react";
 import EventsList from "../../components/EventsList";
 import { useNavigate } from "react-router-dom";
-
+import "../../css/ValidateEventPage.css";
 export default function ValidateEventPage() {
 
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ export default function ValidateEventPage() {
         navigate(`/admin/validate-events/${event.id}`)
     }
     return (
-        <div>
+        <div className="validate-event">
             <h1>Validate Events</h1>
             <EventsList
                 collectionName="events"

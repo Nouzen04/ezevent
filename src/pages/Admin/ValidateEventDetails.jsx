@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 import { db } from "../../firebase"; // Ensure this path is correct
+import '../../css/ValidateEventDetails.css';
 
 export default function ValidateEventDetails() {
     const { id } = useParams(); // This is the Event Document ID
@@ -134,22 +135,39 @@ export default function ValidateEventDetails() {
 
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div className="validate-event-container">
             <h2>Validate Event Details</h2>
-            <p style={{ fontWeight: 'bold' }}>Event ID: {eventData.id}</p>
-
+            
+            {/* Back Button */}
+            <div className="back-btn-wrapper">
+                <button 
+                    type="button" 
+                    className="back-btn"
+                    onClick={() => navigate('/admin/validate-events')}
+                >
+                    Back
+                </button>
+            </div>
+            
+            <p className="details-line" style={{ fontWeight: 'bold' }}>Event ID: {eventData.id}</p>
 
 
             {/* Display Event Information */}
-            <div style={{ marginBottom: '30px', border: '1px solid #ccc', padding: '15px' }}>
+            <div className="event-details-card">
                 <h3>Event Information</h3>
-                <p><strong>Event Name:</strong> {eventData.eventName}</p>
-                <p><strong>Description:</strong> {eventData.description}</p>
-                {/* FIX: Use formatTimestamp for date rendering */}
-                <p><strong>Date:</strong> {formatTimestamp(eventData.date)}</p>
-                <p><strong>Price:</strong> {eventData.Price}</p>
-                <p><strong>Current Status:</strong>
-                    <span style={{ fontWeight: 'bold', color: eventData.status === 'Accepted' ? 'green' : eventData.status === 'Declined' ? 'red' : 'orange' }}>
+                <p className="details-line"><strong>Event Name:</strong> {eventData.eventName}</p>
+                <p className="details-line"><strong>Description:</strong> {eventData.description}</p>
+                <p className="details-line"><strong>Date:</strong> {formatTimestamp(eventData.date)}</p>
+                <p className="details-line"><strong>Price:</strong> {eventData.Price}</p>
+                <p className="details-line">
+                    <strong>Current Status:</strong>
+                    <span 
+                        className={`status-tag ${
+                            eventData.status === 'Accepted' ? 'status-accepted' : 
+                            eventData.status === 'Declined' ? 'status-declined' : 
+                            'status-pending'
+                        }`}
+                    >
                         {eventData.status || 'Pending'}
                     </span>
                 </p>
@@ -157,23 +175,29 @@ export default function ValidateEventDetails() {
 
             {/* Display User/Organizer Information */}
             {userData ? (
-                <div style={{ border: '1px solid #ccc', padding: '15px' }}>
+                <div className="organizer-details-card">
                     <h3>Organizer Information</h3>
-                    <p><strong>Name:</strong> {userData.name}</p>
-                    <p><strong>Email:</strong> {userData.email}</p>
-                    <p><strong>Phone:</strong> {userData.phoneNumber}</p>
+                    <p className="details-line"><strong>Name:</strong> {userData.name}</p>
+                    <p className="details-line"><strong>Email:</strong> {userData.email}</p>
+                    <p className="details-line"><strong>Phone:</strong> {userData.phoneNumber}</p>
 
-                    {/* Accessing the nested 'organizer' map from your screenshot */}
+                    {/* Accessing the nested 'organizer' map */}
                     {userData.organizer && (
                         <div style={{ marginTop: '10px' }}>
                             <h4>Company Details (Organizer Role)</h4>
-                            <p><strong>Company Name:</strong> {userData.organizer.companyName}</p>
-                            <p><strong>Position:</strong> {userData.organizer.position}</p>
-                            <p><strong>Address:</strong> {userData.organizer.companyAddress}</p>
-                            {/* FIX: Use formatTimestamp for validationTimestamp rendering */}
-                            <p><strong>Validation Timestamp:</strong> {formatTimestamp(userData.organizer.validationTimestamp)}</p>
-                            <p><strong>Organizer Status:</strong>
-                                <span style={{ fontWeight: 'bold', color: userData.organizer.status === 'Accepted' ? 'green' : 'orange' }}>
+                            <p className="details-line"><strong>Company Name:</strong> {userData.organizer.companyName}</p>
+                            <p className="details-line"><strong>Position:</strong> {userData.organizer.position}</p>
+                            <p className="details-line"><strong>Address:</strong> {userData.organizer.companyAddress}</p>
+                            <p className="details-line"><strong>Validation Timestamp:</strong> {formatTimestamp(userData.organizer.validationTimestamp)}</p>
+                            <p className="details-line">
+                                <strong>Organizer Status:</strong>
+                                <span 
+                                    className={`status-tag ${
+                                        userData.organizer.status === 'Accepted' ? 'status-accepted' : 
+                                        userData.organizer.status === 'Declined' ? 'status-declined' : 
+                                        'status-pending'
+                                    }`}
+                                >
                                     {userData.organizer.status || 'Pending'}
                                 </span>
                             </p>
@@ -183,18 +207,20 @@ export default function ValidateEventDetails() {
             ) : (
                 <p>User data could not be loaded for the event organizer.</p>
             )}
-            <div style={{ margin: '20px 0', padding: '15px', border: '1px solid #007bff', display: 'flex', gap: '10px' }}>
+            
+            {/* Action Buttons */}
+            <div className="action-buttons-group">
                 <button
                     onClick={() => handleVerify('Accepted')}
                     disabled={isSubmitting || eventData.status === 'Accepted'}
-                    style={{ padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', cursor: 'pointer' }}
+                    className="action-btn approve-btn"
                 >
                     {isSubmitting ? 'Verifying...' : 'Approve Event'}
                 </button>
                 <button
                     onClick={() => handleVerify('Declined')}
                     disabled={isSubmitting || eventData.status === 'Declined'}
-                    style={{ padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', cursor: 'pointer' }}
+                    className="action-btn decline-btn"
                 >
                     {isSubmitting ? 'Declining...' : 'Decline Event'}
                 </button>
