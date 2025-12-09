@@ -43,8 +43,8 @@ export default function ValidateEventDetails() {
                     setEventData({ id: eventSnapshot.id, ...eventDetails });
 
                     // 2. Fetch User
-                    if (eventDetails.userid) {
-                        const userRef = doc(db, 'users', eventDetails.userid);
+                    if (eventDetails.userId) {
+                        const userRef = doc(db, 'users', eventDetails.userId);
                         const userSnapshot = await getDoc(userRef);
 
                         if (userSnapshot.exists()) {

@@ -61,9 +61,9 @@ export default function EventDashboard() {
             // Load QR codes for the event
             const q = query(
                 collection(db, 'QR'),
-                where('userid', '==', uid),
-                where('eventid', '==', currentEventId),
-                orderBy('createdAt', 'desc')
+                where('userId', '==', uid),        // Matches index
+                where('eventId', '==', currentEventId), // Matches index
+                orderBy('createdAt', 'desc')       // Matches index
             );
             const snaps = await getDocs(q);
             const items = snaps.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -135,8 +135,9 @@ export default function EventDashboard() {
                     <div className="qr-grid">
                         {qrDocs.map((doc) => (
                             <div className="qr-item" key={doc.id}>
-                                {doc.image ? (
-                                    <img src={doc.image} alt={`QR ${doc.id}`} />
+                                {/* CHANGED: doc.image -> doc.imageQR matches your DB field */}
+                                {doc.imageQR ? (
+                                    <img src={doc.imageQR} alt={`QR ${doc.id}`} />
                                 ) : (
                                     <div className="qr-placeholder">No image</div>
                                 )}
