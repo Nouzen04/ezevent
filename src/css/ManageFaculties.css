@@ -1,16 +1,16 @@
 .manage-faculties {
   padding: 2rem;
-  max-width: 1200px;
+  /* Updated: Use 98% width to fit more columns comfortably */
+  max-width: 98%; 
   margin: 0 auto;
 }
 
-.faculties-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.manage-faculties h1 {
+  color: #333;
   margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
 }
-
 .back-btn {
   padding: 0.5rem 1rem;
   background-color: #6c757d;

@@ -1,6 +1,7 @@
 .manage-organizer {
   padding: 2rem;
-  max-width: 1200px;
+  /* Updated: Use 98% width to fit more columns comfortably */
+  max-width: 98%; 
   margin: 0 auto;
 }
 
@@ -11,7 +12,7 @@
   font-weight: 600;
 }
 
-.organizer-list-section{
+.organizer-list-section {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 1.5rem;
@@ -19,17 +20,25 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.organizer-list-section h2{
+.organizer-list-section h2 {
   color: #333;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
+/* Updated: Removed overflow/scroll settings */
+.table-container {
+  width: 100%;
+  overflow-x: visible; 
+}
+
 .organizer-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+  /* Updated: Forces table to respect 100% width and not expand */
+  table-layout: fixed; 
 }
 
 .organizer-table thead {
@@ -42,19 +51,42 @@
   font-weight: 600;
   color: #333;
   border-bottom: 2px solid #ddd;
+  white-space: nowrap; /* Keep headers on one line */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* Optional: Define specific widths for critical columns to ensure layout looks good */
+.organizer-table th:nth-child(1) { width: 10%; } /* ID */
+.organizer-table th:nth-child(2) { width: 15%; } /* Email */
+.organizer-table th:last-child { width: 120px; } /* Action Button */
 
 .organizer-table td {
   padding: 1rem;
   border-bottom: 1px solid #e5e5e5;
   color: #555;
+  vertical-align: top; /* Aligns text to top when wrapping occurs */
+  
+  /* Updated: CRITICAL settings to force text wrapping */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all; /* Ensures long IDs break to the next line */
 }
 
 .organizer-table tbody tr:hover {
   background-color: #f9f9f9;
 }
 
+.organizer-table td:first-child {
+  font-size: 0.85rem; 
+  color: #777;
+}
 
+/* Ensure the button column doesn't wrap weirdly */
+.organizer-table td:last-child {
+  white-space: nowrap;
+  word-break: normal; /* Don't break the button text */
+}
 
 .action-btn {
   display: inline-flex;    
@@ -73,3 +105,8 @@
   transition: background-color 0.2s;
   box-sizing: border-box;
 }
+
+/* Status colors (optional, keeping your original logic valid) */
+.status-tag.accepted { color: green; font-weight: bold; }
+.status-tag.declined { color: red; font-weight: bold; }
+.status-tag.pending { color: orange; font-weight: bold; }

@@ -100,6 +100,7 @@ const isValidId = (value) => {
   return (
     <div className="manage-university">
       <h1>Manage Universities</h1>
+      <br></br>
 
       <section className="universities-list-section">
         <h2>Universities List</h2>
@@ -117,7 +118,7 @@ const isValidId = (value) => {
             <tbody>
               {universities.length === 0 ? (
                 <tr>
-                  <td colSpan="3" style={{ textAlign: 'center', padding: '2rem' }}>
+                  <td colSpan="3" >
                     No universities found
                   </td>
                 </tr>
