@@ -139,8 +139,8 @@ export default function CreateEvent() {
             const downloadURL = await getDownloadURL(qrRef);
             // Save QR document with its own ID to firestore
             await setDoc(doc(db, 'QR', pendingQrId), {
-                image: downloadURL,
-                eventId: pendingQrId,
+                imageQR: downloadURL,
+                QRId: pendingQrId,
                 createdAt: serverTimestamp(),
             });
             setQrData(downloadURL);
