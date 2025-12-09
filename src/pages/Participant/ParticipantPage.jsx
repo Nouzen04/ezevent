@@ -1,45 +1,17 @@
 import React from "react";
 import EventsList from "../../components/EventsList";
 import { useAuth } from "../../components/AuthContext";
-
+import {useNavigate} from "react-router-dom";
 export default function ParticipantPage() {
 
-  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleClick = async (event) => {
-
-    try {
-      console.log("Initiating payment...");
-
-      
-      const functionUrl = "https://us-central1-ezevent-b494c.cloudfunctions.net/createStripeCheckout";
-
-      const response = await fetch(functionUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventId: event.id,
-          userId: user.uid,     
-          userEmail: user.email
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("No URL returned from backend");
-        alert("Payment system is currently down.");
-      }
-
-    } catch (error) {
-      console.error("Payment Error:", error);
-      alert("Could not connect to payment server.");
-    }
+    console.log("Getting Event Details:", event.id);
+    navigate(`/participant/events/${event.id}`);
   }
+
+    
 
   return (
     <div className="participant-container">

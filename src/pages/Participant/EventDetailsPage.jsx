@@ -3,6 +3,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../../firebase";
 import "../../css/EventDetailsPage.css";
+// Ensure you have this hook created or import 'auth' directly if you don't use a context
+import { useAuth } from "../../components/AuthContext"; 
 
 export default function EventDetailsPage() {
   const { id } = useParams();
@@ -11,19 +13,15 @@ export default function EventDetailsPage() {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Get current user from your Auth Context
+  const { user } = useAuth();
+
   const formatDate = (dateObj) => {
     if (!dateObj) return "Date not specified";
     if (dateObj.seconds) {
-      // Check if it's a Firestore Timestamp
       return new Date(dateObj.seconds * 1000).toLocaleDateString();
     }
     return dateObj;
-  };
-
-  // 1. Add handler function for the button
-  const handleRegistration = () => {
-      // Logic for handling the registration click goes here
-      alert(`Initiating registration process for: ${event.eventName}`);
   };
 
   useEffect(() => {
@@ -47,13 +45,54 @@ export default function EventDetailsPage() {
     fetchEvent();
   }, [id]);
 
+  // --- FIXED FUNCTION ---
+  // removed the 'e' or 'event' argument so it doesn't shadow the state variable
+  const handleRegistration = async () => {
+    
+    if (!user) {
+        alert("You must be logged in to register.");
+        return;
+    }
+
+    try {
+      console.log("Initiating payment for Event ID:", event.id); // Now correctly logs the ID
+
+      const functionUrl = "https://us-central1-ezevent-b494c.cloudfunctions.net/createStripeCheckout";
+
+      const response = await fetch(functionUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventId: event.id, // Uses the 'event' from useState
+          userId: user.uid,
+          userEmail: user.email
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("No URL returned from backend", data);
+        alert("Payment system is currently unavailable.");
+      }
+
+    } catch (error) {
+      console.error("Payment Error:", error);
+      alert("Could not connect to payment server.");
+    }
+  }
+
   if (loading) return <p>Loading event details...</p>;
   if (!event) return <p>Event not found.</p>;
 
   return (
     <div className="event-details-page-container">
       <div className="event-details-card">
-        
+
         <div className="top-actions-bar">
           <button onClick={() => navigate(-1)} className="back-button">
             ⬅ Back
@@ -73,42 +112,42 @@ export default function EventDetailsPage() {
               />
             )}
 
-            <div className="event-category-box">
+            <div className="info-row">
               <h3>Category</h3>
               <p>{event.category || "Category not specified"}</p>
             </div>
 
-            <div className="event-name-box">
+            <div className="info-row">
               <h3>Event Name</h3>
               <p>{event.eventName}</p>
-            </div>  
+            </div>
 
-            <div className="event-date-box">
+            <div className="info-row">
               <h3>Date</h3>
               <p>{formatDate(event.date)}</p>
             </div>
 
-            <div className="event-description-box">
+            <div className="info-row">
               <h3>Description</h3>
               <p>{event.description}</p>
             </div>
 
-            <div className="event-faculty-box">
+            <div className="info-row">
               <h3>Faculty</h3>
               <p>{event.faculty || "Faculty not specified"}</p>
             </div>
 
-            <div className="event-university-box">
+            <div className="info-row">
               <h3>University</h3>
               <p>{event.university || "University not specified"}</p>
-            </div> 
-            
-             <div className="event-price-box">
+            </div>
+
+            <div className="info-row">
               <h3>Price</h3>
               <p>{event.price || "Price not specified"}</p>
-            </div> 
+            </div>
 
-            <div className="event-location-box">
+            <div className="info-row">
               <h3>Location</h3>
               <p>{event.address || "Location not specified"}</p>
             </div>
@@ -117,10 +156,10 @@ export default function EventDetailsPage() {
         </div>
 
         <button onClick={handleRegistration} className="register-event-button">
-            Register for Event
+          Register for Event
         </button>
 
       </div>
     </div>
   );
-}   
+}
