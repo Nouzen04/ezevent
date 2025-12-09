@@ -1,6 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import { Routes, Route } from "react-router-dom";
 import ViewEventsPage from "../pages/ViewEventPage";
+import EventDetailsPage from "../pages/Participant/EventDetailsPage";
 import ParticipantPage from "../pages/Participant/ParticipantPage";
 import "../css/ParticipantPage.css";
 
@@ -13,6 +14,7 @@ function ParticipantsLayout() {
         <Routes>
           <Route path="" element={<ParticipantPage />} />
           <Route path="events" element={<ParticipantPage />} />
+          <Route path="/events/:id" element={<EventDetailsPage />} />
           <Route
             path="registered"
             element={

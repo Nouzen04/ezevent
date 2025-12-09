@@ -2,7 +2,6 @@ body {
   background-color: var(--content-bg, #FEF6DF);
 }
 .participant-container {
-  display: flex;
   width: 100%;
   min-height: 100vh;
   margin: 0;
@@ -13,6 +12,21 @@ body {
   color: var(--text-color, #333);
 }
 
+.participant-container {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--page-bg, #FEF6DF);
+  font-family: Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color: var(--text-color, #333);
+  /* removed position: relative here to ensure ::before was positioned correctly */
+}
+
+/* --------------------------------
+   CONTENT AREA
+----------------------------------*/
 .participant-content {
   flex: 1;
   padding: 2.5rem;
