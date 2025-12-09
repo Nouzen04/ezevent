@@ -7,12 +7,6 @@ export default function ViewEventsPage() {
   const { user } = useAuth();
 
   const handleClick = async (event) => {
-    // 🛑 SAFETY CHECK: Stop right here if no user is logged in
-    if (!user) {
-      alert("Please log in to register for this event.");
-      // You could also redirect them to login page here: navigate('/login');
-      return; 
-    }
 
     try {
       console.log("Initiating payment...");
