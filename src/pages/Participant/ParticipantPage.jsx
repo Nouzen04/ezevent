@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 export default function ParticipantPage() {
 
   const navigate = useNavigate();
+  const {user} = useAuth()
 
   const handleClick = async (event) => {
     console.log("Getting Event Details:", event.id);
@@ -27,7 +28,9 @@ export default function ParticipantPage() {
           <EventsList
             collectionName="events"
             onClickAction={handleClick}
-            ActionText="Register"
+            ActionText="Details"
+            userRole="participant"
+            userId={user ? user.uid : ""}
           />
         </div>
       </main>

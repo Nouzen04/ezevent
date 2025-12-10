@@ -13,6 +13,21 @@
     font-size: 2rem;
 }
 
+
+.event-image-wrapper {
+  margin-bottom: 15px;
+}
+
+/* Style for the image itself */
+.event-image-preview {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  /* Ensure the image takes up the full width of its container */
+  display: block; 
+}
+
 /* Back Button Styling */
 .back-btn-wrapper {
     margin-bottom: 1.5rem;
