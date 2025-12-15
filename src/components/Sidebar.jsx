@@ -6,7 +6,7 @@ import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import '../css/Sidebar.css'
 
 
-
+// Define menu items for each role
 const menuItems = {
   participant: [
     { label: "View Events", path: "/participant/events" },
@@ -26,14 +26,19 @@ const menuItems = {
   ]
 };
 
+// Sidebar component
 export default function Sidebar({ role }) {
 
+   
     const navigate = useNavigate();
     const location = useLocation();
-    const [userData, setUserData] = useState({ name: '', role: '' });
+    const [userData, setUserData] = useState({ name: '', role: '' });  // State to hold user data
     const [loading, setLoading] = useState(true);
 
+
+    // Fetch user data on component mount
     useEffect(() => {
+      // Function to fetch user data from Firestore
       const fetchUserData = async () => {
         try {
           const currentUser = auth.currentUser;
@@ -56,6 +61,7 @@ export default function Sidebar({ role }) {
       fetchUserData();
     }, []);
 
+  // Handle user logout
   async function handleLogout() {
     try{
       await signOut(auth);
