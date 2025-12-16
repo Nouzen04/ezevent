@@ -11,6 +11,7 @@ const menuItems = {
   participant: [
     { label: "View Events", path: "/participant/events" },
     { label: "My Registrations", path: "/participant/registered" },
+    { label: "My Event History", path: "/participant/history" }
     { label: "Scan Attendance QR", path: "/participant/scan-attendance"}
   ],
   admin: [

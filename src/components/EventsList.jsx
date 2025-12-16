@@ -23,29 +23,24 @@ export default function EventsList({
             try {
                 let eventsData = [];
                 const eventsCollection = collection(db, "events");
-
-                // --- 1. PARTICIPANT REGISTRATION PAGE CASE ---
-                if (userRole === "participant" && location.pathname.includes("registration")) {
-                    
+                
+                if (userRole === "participant" && (location.pathname.includes("registration") || location.pathname.includes("history"))) {
                     const regQuery = query(
-                        collection(db, "registrations"), 
-                        where("userId", "==", userId)
-                    );
-                    const regSnapshot = await getDocs(regQuery);
-                    const registeredEventIds = regSnapshot.docs.map(doc => doc.data().eventId);
-
-                    if (registeredEventIds.length === 0) {
-                        setEvents([]);
-                        setLoading(false);
-                        return;
-                    }
-
-                    const eventSnapshot = await getDocs(eventsCollection);
-                    eventsData = eventSnapshot.docs
-                        .map(doc => ({ id: doc.id, ...doc.data() }))
-                        .filter(event => registeredEventIds.includes(event.id));
-
-                } 
+                    collection(db, "registrations"), 
+                    where("userId", "==", userId)
+                );
+                const regSnapshot = await getDocs(regQuery);
+                const registeredEventIds = regSnapshot.docs.map(doc => doc.data().eventId);
+                if (registeredEventIds.length === 0) {
+                    setEvents([]);
+                    setLoading(false);
+                    return;
+                }
+                const eventSnapshot = await getDocs(eventsCollection);
+                eventsData = eventSnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .filter(event => registeredEventIds.includes(event.id));
+}
                 
                 // --- 2. ALL OTHER CASES (Organizer, Admin, Participant on Home) ---
                 else {
