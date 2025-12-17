@@ -131,3 +131,37 @@
   background: #3152C7;
   box-shadow: 0 8px 18px rgba(65, 105, 225, 0.6);
 }
+
+/* Filter Container */
+.history-filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+/* Base Button Style */
+.history-filter-btn {
+  padding: 8px 16px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+/* Active State (Selected) */
+.history-filter-btn.active {
+  background-color: #007bff; /* Primary Blue */
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* Hover State (Only if not active) */
+.history-filter-btn:not(.active):hover {
+  background-color: #e2e6ea;
+  border-color: #adb5bd;
+}

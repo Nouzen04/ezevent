@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase'; // Adjust path to your firebase config file
+import '../../css/SuccessPage.css';
 
 const SuccessPage = () => {
   const navigate = useNavigate();
@@ -45,20 +46,19 @@ const SuccessPage = () => {
   if (loading) return <div>Loading registration details...</div>;
 
   return (
-    <div>
-      <div>
-        <div></div>
-        <h2>Payment Successful!</h2>
+    <div className="success-page-container">
+      <div className="success-message-box">
+        <h2 className="success-text">Payment Successful!</h2>
         <p>You have been officially registered.</p>
 
         {/* Display the After Registration Message */}
         {message && (
           <div>
-            <p style={{ whiteSpace: 'pre-wrap' }}>{message}</p>
+            <p>{message}</p>
           </div>
         )}
 
-        <button onClick={handleDone}>
+        <button className='back-button' onClick={handleDone}>
           Go to My Events
         </button>
       </div>
