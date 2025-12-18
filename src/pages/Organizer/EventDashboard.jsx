@@ -112,7 +112,7 @@ export default function EventDashboard({ }) {
                 <button className="action-button-brown" onClick={() => navigate(`/organizer/my-event/${id}/attendance-list`, { state: { eventName } })}>
                     Attendance List
                 </button>
-                <button className="action-button-brown" onClick={() => console.log('Generate Report')}>
+                <button className="action-button-brown" onClick={() => navigate(`/organizer/my-event/${id}/report`, { state: { eventName } })}>
                     Generate Report
                 </button>
                 <button className="action-button-brown" onClick={() => setViewMode(viewMode === 'dashboard' ? 'qr' : 'dashboard')}>
