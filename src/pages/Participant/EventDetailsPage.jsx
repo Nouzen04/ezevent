@@ -119,7 +119,7 @@ export default function EventDetailsPage() {
     }
   };
 
-  // Navigates to the actual ticket/receipt view
+  
   const handleViewReceipt = () => {
     navigate(`/participant/history/receipt/ticket/${id}`);
   };
