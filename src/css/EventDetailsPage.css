@@ -1,7 +1,21 @@
+
 .event-details-page-container {
-  overflow-x: hidden;
-  width: 100%;
+  margin-left: 250px; 
+  width: calc(100% - 250px); 
+  
   min-height: 100vh;
+  padding: 40px; 
+  background-color: #fff;
+  box-sizing: border-box;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .event-details-page-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
 
   display: flex;
   justify-content: center;
@@ -12,6 +26,11 @@
 
 .event-details-card {
   width: 100%;
+  max-width: 1000px; 
+  margin: 0 auto; 
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
   max-width: 1000px;
   background: white;
   border-radius: 50px;
@@ -35,36 +54,44 @@
   color: var(--primary-accent);
 }
 
-
+.top-actions-bar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
 
 .back-button {
-  background: #4169E1;
-  color: white;
+  background: #f0f0f0;
+  color: #333;
   border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-size: 15px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.2s;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .back-button:hover {
-  background: #3152C7;
-  box-shadow: 0 4px 10px rgba(65, 105, 225, 0.3);
+  background: #e0e0e0;
 }
 
 .event-details-card h1 {
   font-size: 32px;
   font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f5f5f5;
 }
 
+.event-content-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 .main-info {
   display: flex;
   flex-direction: column;
@@ -75,6 +102,12 @@
 
 .event-image {
   width: 100%;
+  max-width: 600px;
+  height: auto;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 20px;
   max-width: 100%;
   max-height: 1000px;
   object-fit: contain;
@@ -83,8 +116,35 @@
   margin-bottom: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   display: block;
+  /*center the image */
+  margin-left: auto;
+  margin-right: auto;
 }
 
+.info-row {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.event-details-card h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.main-info p {
+  color: #333;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
 .main-info>div {
   width: 100%;
   margin-bottom: 5px;
@@ -110,18 +170,18 @@
   font-weight: 500;
 }
 
-
 .register-event-button {
-  width: 100%;
-  max-width: 350px;
   background: #4169E1;
   color: white;
   border: none;
-  padding: 15px 30px;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: 700;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 40px;
+  display: inline-block;
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
   margin: 40px auto 20px;
   box-shadow: 0 6px 15px rgba(65, 105, 225, 0.4);
@@ -130,7 +190,6 @@
 }
 
 .register-event-button:hover {
-  transform: translateY(-3px);
   background: #3152C7;
   box-shadow: 0 8px 18px rgba(65, 105, 225, 0.6);
 }

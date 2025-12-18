@@ -8,6 +8,8 @@ import SuccessPage from "../pages/Participant/SuccessPage";
 import ReceiptPage from "../pages/Participant/ReceiptPage";
 import "../css/ParticipantPage.css";
 import ScanAttendance from "../pages/Participant/ScanAttendance";
+import ChatListPage from "../pages/Participant/ChatListPage";
+import EventChat from "../pages/Participant/EventChat";
 
 function ParticipantsLayout() {
   const location = useLocation();
@@ -31,6 +33,8 @@ function ParticipantsLayout() {
            <Route path="events/success" element={<SuccessPage />} />
           <Route path="/events/:id" element={<EventDetailsPage />} />
           <Route path="scan-attendance" element={<ScanAttendance />} />
+          <Route path="chat" element={<ChatListPage />} />
+          <Route path="chat/:eventId" element={<EventChat />} />
           
         </Routes>
       </div>
