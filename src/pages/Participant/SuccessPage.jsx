@@ -1,8 +1,7 @@
-// src/pages/PaymentSuccess.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../firebase'; // Adjust path to your firebase config file
+import { db } from '../../firebase';
 import '../../css/SuccessPage.css';
 
 const SuccessPage = () => {
@@ -43,23 +42,30 @@ const SuccessPage = () => {
     navigate('/participant/history');
   };
 
-  if (loading) return <div>Loading registration details...</div>;
+  if (loading) return (
+    <div className="success-loading">
+      <div className="halftone-bg"></div>
+      <div className="loading-glitch">SYNCING REGISTRATION...</div>
+    </div>
+  );
 
   return (
     <div className="success-page-container">
+      <div className="halftone-bg"></div>
       <div className="success-message-box">
-        <h2 className="success-text">Payment Successful!</h2>
-        <p>You have been officially registered.</p>
+        <h2 className="success-text">SUCCESS</h2>
+        <p>RESERVATION LOGGED. ACCESS GRANTED.</p>
 
         {/* Display the After Registration Message */}
         {message && (
-          <div>
-            <p>{message}</p>
+          <div className="message-intel">
+            <span className="intel-label">MISSION INTEL:</span>
+            <p className="intel-content">{message}</p>
           </div>
         )}
 
-        <button className='back-button' onClick={handleDone}>
-          Go to My Events
+        <button className='tbhx-button success-done-btn' onClick={handleDone}>
+          VIEW MY DEPLOYMENTS
         </button>
       </div>
     </div>

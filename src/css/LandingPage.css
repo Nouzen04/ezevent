@@ -1,190 +1,163 @@
-@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
-
-:root{
-  --ezevent-blue: #C1E4FF;
-  --ezevent-green: #E0FFD7;
-  --ezevent-white: #FFFFFF;
+.landing-page {
+  background-color: var(--bg-black);
+  scroll-behavior: smooth;
 }
 
-html, body, a, h1, h2, h3, p, div, span {
-  font-family: 'Inria Sans', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+.lp-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
-/* Root container */
-.lp-root {
-  min-height: 100vh;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  overflow-y: visible;
+/* HERO SECTION */
+.lp-hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 70% 50%, rgba(255, 64, 64, 0.1) 0%, transparent 60%);
 }
 
-/* Layout helpers */
-.lp-container{ max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-.lp-flex { display:flex; align-items:center; justify-content:space-between; }
+.hero-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 30vw;
+  color: rgba(255, 255, 255, 0.03);
+  z-index: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
 
-.lp-hero{ background: linear-gradient(90deg,var(--ezevent-blue),#bfe6ff); padding:64px 0; text-align:center; }
-.lp-hero h1{ font-size:2.25rem; margin-bottom:12px; color:#374151}
-.lp-hero p{ font-size:1.125rem; color:#374151; max-width:680px; margin:0 auto 24px; }
+.lp-hero .lp-container {
+  position: relative;
+  z-index: 2;
+}
 
-.lp-features{ padding:64px 0; background: var(--ezevent-white); }
-.lp-features .grid{ display:grid; grid-template-columns:1fr; gap:24px; }
-@media(min-width:768px){ .lp-features .grid{ grid-template-columns: repeat(3, 1fr); } }
-.lp-card{ background: var(--ezevent-green); padding:20px; border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); text-align:center;  }
-.lp-features { color: #374151;} 
-.lp-card img{ width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:12px; }
+.lp-hero h1 {
+  font-size: 8rem;
+  line-height: 0.9;
+  margin-bottom: 1rem;
+}
 
-.lp-about{ 
-  padding:64px 0; 
-  background: var(--ezevent-blue); 
-  text-align:center; 
-  color: #374151;
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: var(--neon-cyan);
+  margin-bottom: 2rem;
+  letter-spacing: 5px;
+  text-shadow: 0 0 10px var(--neon-cyan-glow);
+}
+
+.text-glow {
+  color: var(--text-white);
+  text-shadow: 0 0 30px var(--primary-red-glow);
+}
+
+/* FEATURES SECTION */
+.lp-features {
+  padding: 100px 0;
+  background: var(--bg-dark);
+  clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+  position: relative;
+}
+
+.lp-features h2 {
+  font-size: 4rem;
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  padding-top: 4rem;
+}
+
+.card-num {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 4rem;
+  color: rgba(255, 64, 64, 0.2);
+}
+
+.feature-card h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary-red);
+}
+
+/* ABOUT SECTION */
+.lp-about {
+  padding: 150px 0;
+  text-align: center;
 }
 
 .lp-about h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #1f2937;
+  font-size: 5rem;
+  margin-bottom: 2rem;
 }
 
-.lp-about p {
-  font-size: 1.125rem;
-  color: #4b5563;
+.about-content p {
+  font-size: 2rem;
+  color: var(--text-gray);
   max-width: 800px;
   margin: 0 auto;
-  line-height: 1.6;
 }
 
-.lp-contact{ 
-  padding:64px 0; 
-  background: var(--ezevent-white); 
-  text-align:center; 
-  color: #374151;
+/* CONTACT SECTION */
+.lp-contact {
+  padding: 100px 0;
+  background: var(--primary-red);
+  color: white;
+  clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+  text-align: center;
 }
 
 .lp-contact h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #1f2937;
-}
-
-.lp-contact p {
-  font-size: 1.125rem;
+  font-size: 5rem;
   margin-bottom: 2rem;
-  color: #4b5563;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  color: white;
 }
 
-.lp-contact-links {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-}
-
-.lp-contact-link {
+.contact-links {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem 2rem;
-  background: #f3f4f6;
-  border-radius: 12px;
-  text-decoration: none;
-  color: #374151;
+  gap: 1rem;
+}
+
+.contact-links a {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 2.5rem;
+  color: white;
   transition: all 0.3s ease;
-  min-width: 140px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.lp-contact-link:hover {
-  background: #e5e7eb;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.lp-contact-link img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  padding: 12px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: block;
-}
-
-/* Icon-specific background colors with white icons */
-.lp-contact-link:first-child img {
-  background: #60a5fa;
-  filter: brightness(0) invert(1);
-}
-
-.lp-contact-link:nth-child(2) img {
-  background: #f97316;
-  filter: brightness(0) invert(1);
-}
-
-.lp-contact-link:nth-child(3) img {
-  background: #3b82f6;
-  filter: brightness(0) invert(1);
-}
-
-.lp-contact-link span {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #1f2937;
-}
-
-footer.lp-footer{ 
-  background:#111827; 
-  color:white; 
-  padding:24px 0; 
-  text-align:center; 
-  margin-top: 0;
-}
-
-footer.lp-footer p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #d1d5db;
+.contact-links a:hover {
+  transform: scale(1.1);
+  letter-spacing: 5px;
 }
 
 @media (max-width: 768px) {
-  .lp-contact-links {
-    gap: 1rem;
-    flex-direction: column;
-    align-items: stretch;
+  .lp-hero h1 {
+    font-size: 4rem;
   }
-  
-  .lp-contact-link {
-    min-width: auto;
-    width: 100%;
-    max-width: 200px;
-    margin: 0 auto;
-    padding: 1.25rem 1.5rem;
+
+  .hero-subtitle {
+    font-size: 1rem;
   }
-  
-  .lp-contact-link img {
-    width: 32px;
-    height: 32px;
-    padding: 10px;
-  }
-  
+
+  .lp-features h2,
   .lp-about h2,
   .lp-contact h2 {
-    font-size: 1.75rem;
-  }
-  
-  .lp-about p,
-  .lp-contact p {
-    font-size: 1rem;
-    padding: 0 1rem;
+    font-size: 3rem;
   }
 }
-

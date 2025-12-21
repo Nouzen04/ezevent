@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar, Pie, Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     Title,
@@ -9,6 +9,8 @@ import {
     BarElement,
     CategoryScale,
     LinearScale,
+    PointElement,
+    LineElement,
 } from 'chart.js';
 import { doc, collection, getDocs, query, where, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -16,7 +18,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import '../../css/Report.css';
 
 // Register Chart.js components
-ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale);
+ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale, PointElement, LineElement);
 
 const ReportPage = () => {
     const { id } = useParams(); // eventId
@@ -24,12 +26,29 @@ const ReportPage = () => {
     const [ageData, setAgeData] = useState({ labels: [], datasets: [] });
     const [genderData, setGenderData] = useState({ labels: [], datasets: [] });
     const [institutionData, setInstitutionData] = useState({ labels: [], datasets: [] });
+    const [salesData, setSalesData] = useState({ labels: [], datasets: [] });
+    const [totalSales, setTotalSales] = useState(0);
+
 
     useEffect(() => {
         const fetchReportData = async () => {
             try {
+                //fetch event details
+                const eventDoc = await getDoc(doc(db, 'events', id));
+                if (!eventDoc.exists()) throw new Error('Event not found');
+
+                const eventData = eventDoc.data();
+                const eventDate = eventData.date.toDate();
+                const eventMonth = eventDate.getMonth();
+                const eventPrice = parseFloat(eventData.price || '0');
+
                 const regQuery = query(collection(db, 'registrations'), where('eventId', '==', id));
                 const regSnap = await getDocs(regQuery);
+
+                const totalParticipants = regSnap.size;
+                const totalSalesAmount = totalParticipants * eventPrice;
+                setTotalSales(totalSalesAmount);
+
 
                 let ages = {
                     'Under 20': 0,
@@ -93,7 +112,9 @@ const ReportPage = () => {
                         {
                             label: 'Participants by Age',
                             data: ageValues,
-                            backgroundColor: '#8B5E3C',
+                            backgroundColor: '#FF4040',
+                            borderColor: '#FFFFFF',
+                            borderWidth: 1,
                         },
                     ],
                 });
@@ -107,7 +128,9 @@ const ReportPage = () => {
                         {
                             label: 'Gender',
                             data: genderValues,
-                            backgroundColor: ['#FF6384', '#36A2EB'],
+                            backgroundColor: ['#FF4040', '#00F0FF'],
+                            borderColor: '#000000',
+                            borderWidth: 2,
                         },
                     ],
                 });
@@ -121,10 +144,32 @@ const ReportPage = () => {
                         {
                             label: 'Institution',
                             data: InsValues,
-                            backgroundColor: ['#c5cc00ff', '#4A6741', '#2C3E50', '#BF360C'],
+                            backgroundColor: ['#FF4040', '#00F0FF', '#FFFFFF', '#444444'],
+                            borderColor: '#000000',
+                            borderWidth: 2,
                         },
                     ],
                 });
+
+                const salesLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const salesValues = Array(12).fill(0);
+                salesValues[eventMonth] = totalSalesAmount;
+
+                setSalesData({
+                    labels: salesLabels,
+                    datasets: [
+                        {
+                            label: 'Ticket Sales (RM)',
+                            data: salesValues,
+                            backgroundColor: 'rgba(0, 240, 255, 0.2)',
+                            borderColor: '#00F0FF',
+                            pointBackgroundColor: '#FF4040',
+                            fill: true,
+                            tension: 0.4,
+                        },
+                    ],
+                });
+
             } catch (err) {
                 console.error('Error fetching report data:', err);
             }
@@ -134,26 +179,53 @@ const ReportPage = () => {
     }, [id]);
 
     return (
-        <div className="report-container">
-            <header className="report-header">
-                <h2>Event Insights</h2>
-                <button className="back-button" onClick={() => navigate(-1)}>
-                    &larr; Back to Dashboard
+        <div className="report-container-tbhx">
+            <header className="report-header-tbhx">
+                <h2 className="tbhx-header">Event <span className="text-glow">Insights</span></h2>
+                <button className="tbhx-button back-btn" onClick={() => navigate(-1)}>
+                    &larr; BACK
                 </button>
             </header>
 
             {/* Summary Statistics */}
             <div className="report-summary-row">
-                <div className="summary-card">
-                    <span className="stat-value">{Object.values(ageData.datasets[0]?.data || []).reduce((a, b) => a + b, 0)}</span>
+                <div className="tbhx-card summary-card">
                     <span className="stat-label">Total Registered</span>
+                    <span className="stat-value">{Object.values(ageData.datasets[0]?.data || []).reduce((a, b) => a + b, 0)}</span>
                 </div>
-                {/* You can add more stat cards here if needed */}
+
+                <div className="tbhx-card summary-card highlighted">
+                    <span className="stat-label">Total Sales</span>
+                    <span className="stat-value">RM {totalSales}</span>
+                </div>
+            </div>
+
+            <div className="tbhx-card sales-chart-section chart-section">
+                <h3 className="tbhx-header">Sales Performance</h3>
+                <div className="sales-chart-wrapper">
+                    {salesData.labels.length > 0 ? (
+                        <Line
+                            data={salesData}
+                            options={{
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { labels: { color: '#FFF', font: { family: 'Bebas Neue' } } }
+                                },
+                                scales: {
+                                    y: { ticks: { color: '#FFF' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                    x: { ticks: { color: '#FFF' }, grid: { display: false } }
+                                },
+                            }}
+                        />
+                    ) : (
+                        <p>Loading sales chart...</p>
+                    )}
+                </div>
             </div>
 
             <div className="report-charts-grid">
-                <div className="chart-section">
-                    <h3>Age Distribution</h3>
+                <div className="tbhx-card chart-section">
+                    <h3 className="tbhx-header">Age Groups</h3>
                     <div className="chart-wrapper">
                         {ageData.labels.length > 0 ? (
                             <Bar
@@ -161,7 +233,10 @@ const ReportPage = () => {
                                 options={{
                                     maintainAspectRatio: false,
                                     plugins: { legend: { display: false } },
-                                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                                    scales: {
+                                        y: { beginAtZero: true, ticks: { color: '#FFF', precision: 0 }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                        x: { ticks: { color: '#FFF' }, grid: { display: false } }
+                                    }
                                 }}
                             />
                         ) : (
@@ -170,15 +245,15 @@ const ReportPage = () => {
                     </div>
                 </div>
 
-                <div className="chart-section">
-                    <h3>Gender Distribution</h3>
+                <div className="tbhx-card chart-section">
+                    <h3 className="tbhx-header">Gender</h3>
                     <div className="chart-wrapper">
                         {genderData.labels.length > 0 ? (
                             <Pie
                                 data={genderData}
                                 options={{
                                     maintainAspectRatio: false,
-                                    plugins: { legend: { position: 'bottom' } }
+                                    plugins: { legend: { position: 'bottom', labels: { color: '#FFF' } } }
                                 }}
                             />
                         ) : (
@@ -187,15 +262,15 @@ const ReportPage = () => {
                     </div>
                 </div>
 
-                <div className="chart-section">
-                    <h3>Institution Distribution</h3>
+                <div className="tbhx-card chart-section">
+                    <h3 className="tbhx-header">Institutions</h3>
                     <div className="chart-wrapper">
                         {institutionData.labels.length > 0 ? (
                             <Pie
                                 data={institutionData}
                                 options={{
                                     maintainAspectRatio: false,
-                                    plugins: { legend: { position: 'bottom' } }
+                                    plugins: { legend: { position: 'bottom', labels: { color: '#FFF' } } }
                                 }}
                             />
                         ) : (

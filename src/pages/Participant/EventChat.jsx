@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  collection, addDoc, query, orderBy, onSnapshot, 
-  serverTimestamp, doc, getDoc, setDoc 
+import {
+  collection, addDoc, query, orderBy, onSnapshot,
+  serverTimestamp, doc, getDoc, setDoc
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useAuth } from "../../components/AuthContext";
 import "../../css/ChatPage.css";
 
 export default function EventChat() {
-  const { eventId } = useParams(); 
+  const { eventId } = useParams();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [eventData, setEventData] = useState(null);
@@ -66,7 +66,7 @@ export default function EventChat() {
       const messagesRef = collection(db, "events", eventId, "chats", threadId, "messages");
       await addDoc(messagesRef, {
         senderId: user.uid,
-        senderName: user.role === "organizer" ? "Organizer" : displayName,
+        senderName: user.role === "organizer" ? "COORDINATOR" : displayName.toUpperCase(),
         text: newMessage,
         createdAt: serverTimestamp()
       });
@@ -77,16 +77,22 @@ export default function EventChat() {
     }
   };
 
-  if (authLoading) return <div>Loading...</div>;
+  if (authLoading) return (
+    <div className="chat-window-loading">
+      <div className="halftone-bg"></div>
+      <p className="loading-glitch">CONNECTING CHANNELS...</p>
+    </div>
+  );
 
   return (
     <div className="chat-window">
+      <div className="halftone-bg"></div>
       <div className="chat-header">
-        <button className="back-btn" onClick={() => navigate(-1)}>←</button>
-        <h3>{eventData?.eventName || "Chat"}</h3>
+        <button className="tbhx-button secondary" onClick={() => navigate(-1)}>&larr;</button>
+        <h3>MISSION CHANNEL: <span className="text-glow">{eventData?.eventName?.toUpperCase() || "INTEL"}</span></h3>
       </div>
       <div className="messages-container">
-        {messages.length === 0 && <p style={{textAlign: 'center', color: 'grey'}}>No messages yet.</p>}
+        {messages.length === 0 && <p style={{ textAlign: 'center', color: 'var(--text-gray)', fontFamily: 'Bebas Neue' }}>NO SECURE COMMS RECORDED.</p>}
         {messages.map((msg) => (
           <div key={msg.id} className={`message-wrapper ${msg.senderId === user.uid ? "right" : "left"}`}>
             <div className={`message-bubble ${msg.senderId === user.uid ? "sent" : "received"}`}>
@@ -99,8 +105,8 @@ export default function EventChat() {
       </div>
       <form onSubmit={sendMessage} className="chat-input-area-container">
         <div className="input-row">
-          <input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..." />
-          <button type="submit">Send</button>
+          <input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="TRANSMIT INTEL..." />
+          <button type="submit" className="tbhx-button">TRANSMIT</button>
         </div>
       </form>
     </div>

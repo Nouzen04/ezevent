@@ -38,41 +38,39 @@ const AttendanceScanner = () => {
     if (error?.name === 'NotAllowedError' || error?.name === 'PermissionDeniedError') {
       setStatus('permission-denied');
       setMessage("Camera permission was denied. Please update your browser settings.");
-    } else {
-      console.log(error?.message);
     }
   };
 
- const processAttendance = async (qrId) => {
+  const processAttendance = async (qrId) => {
     setStatus('processing');
-    setMessage('Verifying QR code...');
+    setMessage('VERIFYING AUTHORIZATION...');
 
     try {
       const currentUser = auth.currentUser;
-      if (!currentUser) throw new Error("You must be logged in to scan.");
+      if (!currentUser) throw new Error("UNAUTHORIZED. PLEASE LOG IN.");
 
       // STEP 1: Look up QR Code to get Event ID
       const qrDocRef = doc(db, 'QR', qrId);
       const qrSnapshot = await getDoc(qrDocRef);
 
-      if (!qrSnapshot.exists()) throw new Error("Invalid QR Code.");
+      if (!qrSnapshot.exists()) throw new Error("INVALID ACCESS TOKEN.");
 
       const qrData = qrSnapshot.data();
       const eventId = qrData.eventId;
 
-      if (!eventId) throw new Error("QR Code is not linked to any event.");
+      if (!eventId) throw new Error("TOKEN CORRUPTED.");
 
       // STEP 2: Fetch Event Details
-      const eventDocRef = doc(db, 'events', eventId); 
+      const eventDocRef = doc(db, 'events', eventId);
       const eventSnapshot = await getDoc(eventDocRef);
-      
+
       let eventName = eventId;
       if (eventSnapshot.exists()) {
         const eventData = eventSnapshot.data();
-        eventName = eventData.title || eventData.name || eventData.eventName || eventId;
+        eventName = eventData.eventName || eventId;
       }
 
-      setMessage(`Checking registration for: ${eventName}...`);
+      setMessage(`SYNCING WITH: ${eventName.toUpperCase()}...`);
 
       // STEP 3: Find Registration
       const registrationsRef = collection(db, 'registrations');
@@ -84,7 +82,7 @@ const AttendanceScanner = () => {
 
       const registrationSnapshot = await getDocs(q);
 
-      if (registrationSnapshot.empty) throw new Error("You are not registered for this event.");
+      if (registrationSnapshot.empty) throw new Error("REGISTRATION DATA NOT FOUND.");
 
       const registrationDoc = registrationSnapshot.docs[0];
 
@@ -92,14 +90,14 @@ const AttendanceScanner = () => {
       const attendanceRef = collection(db, `registrations/${registrationDoc.id}/attendance`);
       const attendanceSnapshot = await getDocs(attendanceRef);
 
-      if (attendanceSnapshot.empty) throw new Error("Attendance record missing.");
+      if (attendanceSnapshot.empty) throw new Error("ATTENDANCE PROTOCOL MISSING.");
 
       const attendanceDoc = attendanceSnapshot.docs[0];
 
       // STEP 5: Check Previous Check-in
       if (attendanceDoc.data().status === 'present') {
         setStatus('success');
-        setMessage(`Already checked in: ${eventName}`);
+        setMessage(`ACCESS ALREADY LOGGED: ${eventName.toUpperCase()}`);
         setIsCameraOpen(false);
         return;
       }
@@ -111,13 +109,13 @@ const AttendanceScanner = () => {
       });
 
       setStatus('success');
-      setMessage(`Success! Checked in for: ${eventName}`);
+      setMessage(`ACCESS GRANTED: ${eventName.toUpperCase()}`);
       setIsCameraOpen(false);
 
     } catch (error) {
       console.error("Attendance Error:", error);
       setStatus('error');
-      setMessage(error.message);
+      setMessage(error.message.toUpperCase());
       setIsCameraOpen(false);
     }
   };
@@ -135,22 +133,23 @@ const AttendanceScanner = () => {
 
   return (
     <div className="scanner-container">
+      <div className="halftone-bg"></div>
       <div className="scanner-card">
-        <button onClick={() => navigate(-1)} className="back-button">
-          ⬅ Back
+        <button onClick={() => navigate(-1)} className="tbhx-button secondary back-button">
+          &larr; BACK
         </button>
-        <h2 className="scanner-title">Scan Event QR</h2>
+        <h2 className="tbhx-header">QR <span className="text-glow">SCANNER</span></h2>
 
         {/* ERROR: Permission Denied State */}
         {status === 'permission-denied' && (
-          <div className="status-box permission">
+          <div className="status-box error">
             <div className="status-icon">📷</div>
-            <p><strong>Camera Access Needed</strong></p>
+            <strong>CAMERA OFFLINE</strong>
             <p className="status-desc">
-              Please allow camera access in your browser URL bar.
+              PLEASE MANUALLY ENABLE CAMERA ACCESS PROTOCOL.
             </p>
-            <button onClick={() => window.location.reload()} className="action-btn btn-reload">
-              Reload Page
+            <button onClick={() => window.location.reload()} className="tbhx-button">
+              REBOOT SCANNER
             </button>
           </div>
         )}
@@ -160,13 +159,13 @@ const AttendanceScanner = () => {
           <div className="start-scan-container">
             <div className="start-icon">📷</div>
             <p className="start-text">
-              Ready to check in? Click below to activate your camera.
+              INITIALIZE SCANNING PROTOCOL FOR EVENT ACCESS.
             </p>
             <button
               onClick={() => setIsCameraOpen(true)}
-              className="action-btn btn-primary"
+              className="tbhx-button"
             >
-              Open Scanner
+              INITIALIZE SCANNER
             </button>
           </div>
         )}
@@ -182,14 +181,13 @@ const AttendanceScanner = () => {
                 audio: false,
                 finder: true,
               }}
-              // This prop is specific to the library and often requires inline objects
               styles={{
                 container: { width: '100%', height: '100%' },
                 video: { objectFit: 'cover' }
               }}
             />
             <p className="scanner-overlay-text">
-              Align QR code within frame
+              ALIGN TOKEN WITHIN SENSOR FRAME
             </p>
           </div>
         )}
@@ -199,27 +197,27 @@ const AttendanceScanner = () => {
 
           {status === 'processing' && (
             <div className="status-box processing">
-              <p><strong>Processing...</strong></p>
+              <strong>PROCESSING...</strong>
               <p className="status-subtext">{message}</p>
             </div>
           )}
 
           {status === 'success' && (
             <div className="status-box success">
-              <p><strong>Check-in Verified!</strong></p>
+              <strong>PROTOCOL SUCCESS</strong>
               <p>{message}</p>
-              <button onClick={navigateHistory} className="action-btn btn-success">
-                Go to Event History
+              <button onClick={navigateHistory} className="tbhx-button">
+                HISTORY LOG
               </button>
             </div>
           )}
 
           {status === 'error' && (
             <div className="status-box error">
-              <p><strong>Check-in Failed</strong></p>
+              <strong>PROTOCOL FAILURE</strong>
               <p className="error-detail">{message}</p>
-              <button onClick={resetScanner} className="action-btn btn-error">
-                Try Again
+              <button onClick={resetScanner} className="tbhx-button">
+                RETRY SCAN
               </button>
             </div>
           )}

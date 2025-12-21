@@ -1,41 +1,101 @@
 .attendance-container {
-    padding: 2rem;
-    background-color: #fff8f0;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 4rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .attendance-container h2 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: #333;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 4rem;
+    margin-bottom: 3rem;
+    color: var(--text-white);
+    border-bottom: 4px solid var(--primary-red);
+    padding-bottom: 1rem;
 }
 
 .action-button-brown {
-    background-color: #8B5E3C;
-    color: #fff;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    margin-bottom: 12px;
-    transition: background-color 0.2s ease;
+    margin-bottom: 3rem;
+}
+
+.subheader-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+.search-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-red);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px var(--primary-red-glow);
 }
 
 .action-button-CSV {
-    background-color: #8B5E3C;
-    color: #fff;
+    background: var(--neon-cyan);
+    color: black;
     border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
+    padding: 0.8rem 2rem;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
     cursor: pointer;
-    font-weight: 500;
-    margin-bottom: 4px;
-    margin-top: 12px;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
 }
 
-.action-button-brown:hover {
-    background-color: #6e4930;
+.action-button-CSV:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 0 20px var(--neon-cyan-glow);
+}
+
+/* DataTable Custom Overrides */
+.rdt_Table {
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: white !important;
+}
+
+.rdt_TableHeadRow {
+    background: var(--bg-dark) !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+}
+
+.rdt_TableHeadRow div {
+    font-family: 'Bebas Neue', cursive !important;
+    font-size: 1.3rem !important;
+    letter-spacing: 1px;
+    color: var(--primary-red) !important;
+}
+
+.rdt_TableRow {
+    background: transparent !important;
+    color: white !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.2s ease;
+}
+
+.rdt_TableRow:hover {
+    background: rgba(255, 64, 64, 0.05) !important;
+    border-left: 4px solid var(--primary-red) !important;
+}
+
+.rdt_Pagination {
+    background: var(--bg-dark) !important;
+    color: var(--text-gray) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.rdt_Pagination button svg {
+    fill: var(--primary-red) !important;
 }

@@ -15,25 +15,24 @@ export default function OrganizerPage() {
   };
 
   return (
-
-    <>
-      <div className="organizer-header">
-        <div className="organizer-profile">
-          <h1>My Events</h1>
-        </div>
-        <div className="organizer-divider"></div>
+    <div className="organizer-page-root">
+      <div className="organizer-header-section">
+        <h1 className="tbhx-header">Organizer <span className="text-glow">Dashboard</span></h1>
+        <div className="header-accent"></div>
       </div>
 
       <div className="organizer-main">
+        <div className="section-title">
+          <h2 className="tbhx-header">Active Events</h2>
+        </div>
         <EventsList
           collectionName="events"
           onClickAction={handleGoToEventDashboard}
-          ActionText="View Details"
+          ActionText="Manage Event"
           userRole="organizer"
           userId={user ? user.uid : ""}
         />
       </div>
-    </>
-
+    </div>
   )
 }

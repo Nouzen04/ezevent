@@ -122,62 +122,68 @@ export default function EventDashboard({ }) {
 
     // --- JSX RENDER ---
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container-tbhx">
+            <div className="halftone-bg"></div>
+
             {/* Event Name Header */}
-            <header className="event-header">{eventName}</header>
+            <header className="event-header-tbhx">
+                <h1 className="tbhx-header">Event <span className="text-glow">Dashboard</span></h1>
+                <p className="current-event-name">{eventName}</p>
+                <div className="header-accent"></div>
+            </header>
 
             {/* --- Main Dashboard View --- */}
             {viewMode === 'dashboard' && (
-                <>
+                <div className="dashboard-main-content">
                     {/* Main Attendance Card */}
-                    <div className="attendance-card-pink">
+                    <div className="attendance-hero-card">
                         <span className="attendance-rate">{currentAttendanceRate}</span>
-                        <span className="attendance-label">Today's Attendance</span>
+                        <span className="attendance-label">CURRENT ATTENDANCE</span>
                     </div>
 
                     {/* Stats Cards Row */}
-                    <div className="stats-row">
-                        <div className="stats-card">
-                            <span className="stats-number">{attendanceStats.totalAttendees}</span>
-                            <span className="stats-label">Total Attendees</span>
+                    <div className="stats-grid">
+                        <div className="tbhx-card stats-card-tbhx">
+                            <span className="stats-label">PRESENT</span>
+                            <span className="stats-number text-glow-cyan">{attendanceStats.totalAttendees}</span>
                         </div>
-                        <div className="stats-card">
-                            <span className="stats-number">{attendanceStats.totalAbsence}</span>
-                            <span className="stats-label">Total Absence</span>
+                        <div className="tbhx-card stats-card-tbhx">
+                            <span className="stats-label">ABSENT</span>
+                            <span className="stats-number text-glow-red">{attendanceStats.totalAbsence}</span>
                         </div>
                     </div>
-                </>
+                </div>
             )}
 
             {/* Action Buttons */}
-            <div className="action-buttons">
-                <button className="action-button-brown" onClick={() => navigate(`/organizer/my-event/${id}/attendance-list`, { state: { eventName } })}>
-                    Attendance List
+            <div className="action-row-tbhx">
+                <button className="tbhx-button" onClick={() => navigate(`/organizer/my-event/${id}/attendance-list`, { state: { eventName } })}>
+                    ATTENDANCE LIST
                 </button>
-                <button className="action-button-brown" onClick={() => navigate(`/organizer/my-event/${id}/report`, { state: { eventName } })}>
-                    Generate Report
+                <button className="tbhx-button" onClick={() => navigate(`/organizer/my-event/${id}/report`, { state: { eventName } })}>
+                    GENERATE REPORT
                 </button>
-                <button className="action-button-brown" onClick={() => setViewMode(viewMode === 'dashboard' ? 'qr' : 'dashboard')}>
-                    {viewMode === 'dashboard' ? 'View QR' : 'Back to Dashboard'}
+                <button className="tbhx-button secondary" onClick={() => setViewMode(viewMode === 'dashboard' ? 'qr' : 'dashboard')}>
+                    {viewMode === 'dashboard' ? 'VIEW QR CODES' : 'BACK TO DASHBOARD'}
                 </button>
             </div>
 
             {viewMode === 'qr' && (
-                <div className="viewqr-container">
-                    <h2>Your Event QR Codes</h2>
-                    <hr />
-                    {loading && <div className="loading-message">Loading QR codes...</div>}
-                    {!loading && qrDocs.length === 0 && <div className="no-qrs">No QR codes found for this event.</div>}
+                <div className="viewqr-container-tbhx">
+                    <h2 className="tbhx-header">Event <span className="text-glow">QR Access</span></h2>
 
-                    <div className="qr-grid">
+                    {loading && <div className="loading-message">INCOMING DATA...</div>}
+                    {!loading && qrDocs.length === 0 && <div className="no-qrs">NO QR CODES GENERATED FOR THIS SECTOR.</div>}
+
+                    <div className="qr-grid-tbhx">
                         {qrDocs.map((doc) => (
-                            <div className="qr-item" key={doc.id}>
+                            <div className="tbhx-card qr-item-tbhx" key={doc.id}>
                                 {doc.imageQR ? (
                                     <img src={doc.imageQR} alt={`QR ${doc.id}`} />
                                 ) : (
-                                    <div className="qr-placeholder">No image</div>
+                                    <div className="qr-placeholder">NO DATA</div>
                                 )}
-                                <div className="qr-meta">ID: {doc.id}</div>
+                                <div className="qr-meta">ID: {doc.id.substring(0, 8)}...</div>
                             </div>
                         ))}
                     </div>
