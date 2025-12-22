@@ -1,87 +1,86 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { auth, db } from "../../firebase";
-import { doc, getDoc } from "firebase/firestore";
-import "../../css/LoginPage.css";
+import React, { useState } from 'react'
+import { auth, db } from '../../firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
+import { useNavigate, Link } from "react-router-dom";
+import '../../css/LoginPage.css'
 
-function LoginPage() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+export default function LoginPage() {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-
+    const handleLogin = async (e) => {
+        e.preventDefault()
+        setError('')
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            const role = userDoc.exists() ? userDoc.data().role : null;
+            // Fetch user role from Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                const role = userData.role;
 
-            if (role === "admin") navigate("/admin");
-            else if (role === "participant") navigate("/participant");
-            else if (role === "organizer") navigate("/organizer");
-            else setError("User role not found. Please contact support.");
-        } catch (error) {
-            setError("Invalid credentials. Please try again.");
+                // Navigate based on role
+                if (role === 'admin') {
+                    navigate('/admin');
+                } else if (role === 'organizer') {
+                    navigate('/organizer');
+                } else {
+                    navigate('/participant/events');
+                }
+            } else {
+                setError('User data not found.');
+            }
+        } catch (err) {
+            setError(err.message)
         }
-    };
+    }
 
     return (
         <div className="auth-wrapper">
+            <div className="halftone-bg"></div>
             <div className="auth-container">
-
-                {/* Logo */}
                 <div className="logo-section">
-                    <div className="logo-circle">
-                        <span className="logo-icon calendar-base">📅</span>
-                        <div className="calendar-square"></div>
-                        <span className="checkmark">✔</span>
-                    </div>
-                    <div className="logo-text">Event Management System</div>
+                    <p className="logo-text">EZEvent</p>
                 </div>
 
-                <h2>Sign In</h2>
+                <h2>SIGN IN</h2>
+                {error && <div className="error-message">{error}</div>}
 
-                {error && <div className="error-message show">{error}</div>}
-
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleLogin}>
                     <div className="form-group">
-                        <label>Email Address</label>
+                        <label>EMAIL ADDRESS</label>
                         <input
                             type="email"
-                            placeholder="Enter email"
+                            placeholder="user@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={error ? "error" : ""}
+                            required
                         />
                     </div>
-
                     <div className="form-group">
-                        <label>Password</label>
+                        <label>PASSWORD</label>
                         <input
                             type="password"
-                            placeholder="Enter password"
+                            placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className={error ? "error" : ""}
+                            required
                         />
                     </div>
-
-                    <button type="submit" className="auth-button">Sign In</button>
+                    <button type="submit" className="tbhx-button auth-button">
+                        LOGIN
+                    </button>
                 </form>
 
                 <div className="auth-footer">
-                    Don’t have an account?{" "}
-                    <a className="auth-link" href="/signup">Register Here</a>
+                    <p>DON'T HAVE AN ACCOUNT? <Link to="/signup">JOIN THE FUTURE</Link></p>
                 </div>
             </div>
         </div>
-    );
+    )
 }
-
-export default LoginPage;

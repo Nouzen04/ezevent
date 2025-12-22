@@ -59,10 +59,10 @@ const AttendanceList = () => {
 
     // DataTable columns
     const columns = [
-        { name: 'Name', selector: row => row.name, sortable: true },
-        { name: 'Email', selector: row => row.email, sortable: true },
-        { name: 'Absent', selector: row => (row.absence ? 'Yes' : 'No'), sortable: true },
-        { name: 'Phone Number', selector: row => row.phoneNumber, sortable: true },
+        { name: 'NAME', selector: row => row.name, sortable: true },
+        { name: 'EMAIL', selector: row => row.email, sortable: true },
+        { name: 'ABSENT', selector: row => (row.absence ? 'YES' : 'NO'), sortable: true },
+        { name: 'PHONE NUMBER', selector: row => row.phoneNumber, sortable: true },
     ];
 
     // Filter attendees by name
@@ -75,13 +75,13 @@ const AttendanceList = () => {
         <div className="subheader-container">
             <input
                 type="text"
-                placeholder="Search by name..."
+                placeholder="SEARCH BY NAME..."
                 className="search-input"
                 value={filterText}
                 onChange={e => setFilterText(e.target.value)}
             />
             <button className="action-button-CSV" onClick={exportToCSV}>
-                Export CSV
+                EXPORT CSV
             </button>
         </div>
     );
@@ -115,53 +115,52 @@ const AttendanceList = () => {
 
     return (
         <div className="attendance-container">
-            <h2>Attendance List for {eventName}</h2>
+            <div className="halftone-bg"></div>
+            <h2 className="tbhx-header">ATTENDANCE <span className="text-glow">LOG</span></h2>
 
             {/* Back Button */}
             <button
-                className="action-button-brown"
+                className="tbhx-button action-button-brown"
                 onClick={() => navigate(`/organizer/my-event/${id}/dashboard`)}
             >
-                ← Back to Dashboard
+                &larr; BACK
             </button>
 
             <DataTable
                 columns={columns}
                 data={filteredAttendees}
                 pagination
-                highlightOnHover
-                striped
                 responsive
                 subHeader
                 subHeaderComponent={subHeaderComponent}
-                theme="brownTheme"
+                theme="tbhxTheme"
             />
         </div>
     );
 };
 
-createTheme('brownTheme', {
+createTheme('tbhxTheme', {
     text: {
-        primary: '#3e2723',
-        secondary: '#6d4c41',
+        primary: '#FFFFFF',
+        secondary: '#AAAAAA',
     },
     background: {
-        default: '#fff8f0',
+        default: 'transparent',
     },
     context: {
-        background: '#8B5E3C',
+        background: '#FF4040',
         text: '#FFFFFF',
     },
     divider: {
-        default: '#d7ccc8',
+        default: 'rgba(255, 64, 64, 0.2)',
     },
     highlightOnHover: {
-        default: '#fbe9e7',
-        text: '#3e2723',
+        default: 'rgba(255, 64, 64, 0.1)',
+        text: '#FFFFFF',
     },
     striped: {
-        default: '#f3e5f5',
-        text: '#3e2723',
+        default: 'rgba(255, 255, 255, 0.02)',
+        text: '#FFFFFF',
     },
 });
 

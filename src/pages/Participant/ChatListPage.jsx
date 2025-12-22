@@ -30,7 +30,7 @@ export default function ChatListPage() {
           const eventsData = eventsSnapshot.docs
             .map(doc => ({ id: doc.id, ...doc.data() }))
             .filter(event => eventIds.includes(event.id));
-          
+
           setRegisteredEvents(eventsData);
         }
       } catch (error) {
@@ -43,34 +43,40 @@ export default function ChatListPage() {
     fetchMyEvents();
   }, [user]);
 
-  if (loading) return <div className="loading">Loading your chats...</div>;
+  if (loading) return (
+    <div className="chat-list-container">
+      <div className="halftone-bg"></div>
+      <p className="loading-glitch">DECRYPTING CHANNELS...</p>
+    </div>
+  );
 
   return (
     <div className="chat-list-container">
+      <div className="halftone-bg"></div>
       <div className="participant-header">
-        <h1>Event Messages</h1>
-        <p>Select an event to chat with the organizer</p>
+        <h1 className="tbhx-header">MISSION <span className="text-glow">CHANNELS</span></h1>
+        <p>RE-ESTABLISH CONTACT WITH SECTOR COORDINATORS</p>
+        <div className="header-accent"></div>
       </div>
-      
+
       <div className="chat-grid">
         {registeredEvents.length === 0 ? (
           <div className="no-chats">
-            <p>You haven't registered for any events yet.</p>
-            <button onClick={() => navigate("/participant/events")}>Browse Events</button>
+            <p>NO ACTIVE DEPLOYMENTS FOUND.</p>
+            <button className="tbhx-button" onClick={() => navigate("/participant/events")}>BROWSE MISSIONS</button>
           </div>
         ) : (
           registeredEvents.map(event => (
-            <div 
-              key={event.id} 
-              className="chat-card" 
+            <div
+              key={event.id}
+              className="chat-card"
               onClick={() => navigate(`/participant/chat/${event.id}`)}
             >
-              <div className="chat-card-icon">💬</div>
               <div className="chat-card-info">
-                <h3>{event.eventName}</h3>
-                <p>Click to join the discussion</p>
+                <h3>{event.eventName.toUpperCase()}</h3>
+                <p>SECTOR COMMS ACTIVE</p>
               </div>
-              <div className="chat-card-arrow">→</div>
+              <div className="chat-card-arrow">&rarr;</div>
             </div>
           ))
         )}

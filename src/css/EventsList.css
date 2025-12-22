@@ -1,24 +1,19 @@
-/* EventsList.css - Only layout concerns remain here */
 .events-container {
-  display: block; /* Changed from flex to block to simplify layout */
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  font-family: 'Segoe UI', sans-serif;
+  padding: 2rem 0;
   width: 100%;
-  box-sizing: border-box; /* Ensures padding doesn't break width */
-}
-
-.events-container h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 1.5rem;
+  display: block;
 }
 
 .events-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
   width: 100%;
-  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }

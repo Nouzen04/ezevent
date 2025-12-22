@@ -1,251 +1,194 @@
-/* --- 1. Global Setup and Color Palette --- */
-:root {
-  --bg-color: #f7e9d7;
-  --pink-card: #ff9a9e;
-  /* Modern gradient */
-  --grey-card: #ffffff;
-  /* Clean white for stats */
-  --stats-text: #6a5acd;
-  --brown-button: #8b4513;
-  --button-hover: #a0522d;
-  --text-dark: #333333;
-  --text-light: #ffffff;
-  --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-  --card-hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
-}
-
-/* Global Container */
-.dashboard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: 40px;
-  background-color: var(--bg-color);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
-/* Back Arrow and Header */
-.back-arrow {
-  align-self: flex-start;
-  font-size: 24px;
-  color: var(--text-dark);
-  cursor: pointer;
-  margin-bottom: 20px;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-.back-arrow:hover {
-  opacity: 1;
-}
-
-.event-header {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--text-dark);
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-/* --- 2. Dashboard Layout --- */
-
-/* Main Attendance Card (Pink) */
-.attendance-card-pink {
+.dashboard-container-tbhx {
+  padding: 2rem;
   width: 100%;
-  max-width: 800px;
-  background: var(--pink-card);
-  border-radius: 30px;
-  padding: 50px 30px;
+}
+
+.event-header-tbhx {
+  margin-bottom: 4rem;
+  position: relative;
+  border-bottom: 4px solid var(--primary-red);
+  padding-bottom: 1rem;
+}
+
+.event-header-tbhx h1 {
+  font-size: 5rem;
+  margin: 0;
+}
+
+.current-event-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 2rem;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  margin-top: -0.5rem;
+}
+
+.header-accent {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 200px;
+  height: 4px;
+  background: var(--text-white);
+  transform: skewX(-20deg);
+}
+
+.dashboard-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+.attendance-hero-card {
+  background: linear-gradient(135deg, var(--primary-red) 0%, #900 100%);
+  padding: 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 40px;
-  box-shadow: var(--card-shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+  box-shadow: 0 0 40px var(--primary-red-glow);
+  position: relative;
+  overflow: hidden;
 }
 
-.attendance-card-pink:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--card-hover-shadow);
+.attendance-hero-card::before {
+  content: 'STATS';
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 10rem;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
 }
 
 .attendance-rate {
-  font-size: 80px;
-  font-weight: 900;
-  color: var(--text-light);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 10rem;
   line-height: 1;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  color: white;
+  text-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
 }
 
 .attendance-label {
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-top: 10px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.5rem;
+  letter-spacing: 5px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 1rem;
 }
 
-/* Stats Cards Row (Grid) */
-.stats-row {
+.stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 40px;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
 }
 
-.stats-card {
-  background-color: var(--grey-card);
-  border-radius: 20px;
-  padding: 30px 20px;
+.stats-card-tbhx {
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease;
+  padding: 3rem;
+  transform: skewX(-2deg);
 }
 
-.stats-card:hover {
-  transform: translateY(-3px);
-}
-
-.stats-number {
-  font-size: 42px;
-  font-weight: 800;
-  color: var(--stats-text);
-  line-height: 1;
-  margin-bottom: 8px;
+.stats-card-tbhx>* {
+  transform: skewX(2deg);
 }
 
 .stats-label {
-  font-size: 14px;
-  color: #666;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
 }
 
-/* --- 3. Action Buttons --- */
-.action-buttons {
-  width: 100%;
-  max-width: 800px;
+.stats-number {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 5rem;
+  line-height: 1;
+}
+
+.text-glow-cyan {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 20px var(--neon-cyan-glow);
+}
+
+.text-glow-red {
+  color: var(--primary-red);
+  text-shadow: 0 0 20px var(--primary-red-glow);
+}
+
+.action-row-tbhx {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-.action-button-brown {
-  background-color: var(--brown-button);
-  color: var(--text-light);
-  border: none;
-  border-radius: 12px;
-  padding: 18px 24px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
-  transition: all 0.2s ease;
-  text-align: center;
+.tbhx-button.secondary {
+  background: transparent;
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
 }
 
-.action-button-brown:hover {
-  background-color: var(--button-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.4);
+.tbhx-button.secondary:hover {
+  background: var(--neon-cyan);
+  color: black;
+  box-shadow: 0 0 20px var(--neon-cyan-glow);
 }
 
-.action-button-brown:active {
-  transform: translateY(0);
+/* QR VIEW */
+.viewqr-container-tbhx {
+  margin-top: 5rem;
 }
 
-/* --- 4. QR Code View Styles --- */
-
-.viewqr-container {
-  width: 100%;
-  max-width: 800px;
-  margin-top: 40px;
-  padding: 30px;
-  background-color: white;
-  border-radius: 25px;
-  box-shadow: var(--card-shadow);
+.qr-grid-tbhx {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
 }
 
-.viewqr-container hr {
-  border: none;
-  border-top: 1px solid #f0f0f0;
-  margin: 30px 0;
-}
-
-.viewqr-container h2 {
-  font-size: 24px;
-  color: var(--text-dark);
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: 700;
-}
-
-/* Messaging Styles */
-.loading-message,
-.no-qrs {
-  text-align: center;
-  color: #888;
-  padding: 30px;
-  font-style: italic;
-  font-size: 16px;
-}
-
-/* QR Grid Layout */
-.qr-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-}
-
-.qr-item {
+.qr-item-tbhx {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15px;
-  border: 1px solid #eee;
-  border-radius: 15px;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
+  padding: 1.5rem;
 }
 
-.qr-item:hover {
-  transform: scale(1.02);
-}
-
-.qr-item img {
-  width: 150px;
-  height: 150px;
-  border-radius: 8px;
+.qr-item-tbhx img {
+  width: 100%;
+  aspect-ratio: 1/1;
   object-fit: contain;
-  margin-bottom: 12px;
+  margin-bottom: 1rem;
+  filter: grayscale(1) invert(1) contrast(2);
+  transition: all 0.3s ease;
 }
 
-.qr-placeholder {
-  width: 150px;
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background-color: #fafafa;
-  border: 2px dashed var(--placeholder-border);
-  border-radius: 8px;
-  color: #aaa;
-  font-size: 14px;
-  margin-bottom: 12px;
+.qr-item-tbhx:hover img {
+  filter: none;
+  transform: scale(1.05);
 }
 
 .qr-meta {
-  font-size: 13px;
-  color: #666;
   font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--text-gray);
+}
+
+@media (max-width: 768px) {
+  .event-header-tbhx h1 {
+    font-size: 3rem;
+  }
+
+  .attendance-rate {
+    font-size: 5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,80 +1,113 @@
-/* EventCard.css */
-
-.event-card {
-  background-color: #ffffff;
-  border-radius: 12px; /* Smooth rounded corners */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Subtle shadow depth */
-  padding: 24px;
+.event-card-tbhx {
+  padding: 0;
+  overflow: hidden;
   display: flex;
-  flex-direction: column; /* Stack content top to bottom */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid #e0e0e0;
-  height: auto; /* Ensures all cards in a row are the same height */
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.event-img-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.event-img-wrapper img {
   width: 100%;
-  box-sizing: border-box; /* Includes padding in width calculation */
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
-/* Hover effect */
-.event-card:hover {
-  transform: translateY(-4px); /* Lifts up slightly */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  border-color: #d0d0d0;
+.event-card-tbhx:hover .event-img-wrapper img {
+  transform: scale(1.1) rotate(2deg);
 }
 
-/* Typography inside the card */
-.event-card h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 1.25rem;
-  color: #222;
+.event-date-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--primary-red);
+  color: white;
+  padding: 0.4rem 1rem;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.1rem;
+  transform: skewX(-15deg);
+  box-shadow: 0 0 15px var(--primary-red-glow);
+}
+
+.event-details {
+  padding: 1.5rem;
+}
+
+.event-details h3 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-white);
+}
+
+.event-location {
+  color: var(--neon-cyan);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.event-desc {
+  color: var(--text-gray);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.event-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.8rem;
+  color: var(--text-gray);
+  letter-spacing: 1px;
+}
+
+.stat-val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.4rem;
+  color: var(--primary-red);
+}
+
+.status-badge {
+  font-size: 0.9rem;
+  text-transform: uppercase;
   font-weight: 700;
 }
 
-.event-card p {
-  color: #555;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin: 8px 0;
+.status-badge.pending {
+  color: #FFA500;
 }
 
-.event-card strong {
-  color: #333;
-  font-weight: 600;
+.status-badge.accepted {
+  color: #32CD32;
 }
 
-/* The Action Button */
-.event-card button.auth-button {
-  
-  /* --- ADD/UPDATE THIS LINE --- */
-  margin-top: auto; /* Pushes the button down to the bottom edge of the card */
-  /* -------------------------- */
-  
-  background-color: #2563eb; 
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.status-badge.rejected {
+  color: #FF4040;
+}
+
+.card-action {
   width: 100%;
-}
-
-.img-card {
-  width: 100%;       /* Allow it to shrink/grow with the card */
-  height: 220px;     /* Keep the fixed height */
-  /* Remove aspect-ratio here; let the grid control the width */
-  margin: 0 0 16px 0;
-  overflow: hidden;
-  border-radius: 8px;
-}
-
-.img-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Changed from 'contain' to 'cover' so it fills the box nicely */
-}
-.event-card button.auth-button:hover {
-  background-color: #1d4ed8; /* Darker blue */
 }

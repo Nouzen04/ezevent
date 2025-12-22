@@ -19,7 +19,7 @@ export default function ReceiptPage() {
       try {
         // 1. Fetch Event Details
         const eventSnap = await getDoc(doc(db, "events", id));
-        
+
         // 2. Fetch specific Registration details for this user and event
         const regQuery = query(
           collection(db, "registrations"),
@@ -42,38 +42,52 @@ export default function ReceiptPage() {
     if (user) fetchReceiptData();
   }, [id, user]);
 
-  if (loading) return <div className="loading">Generating Receipt...</div>;
-  if (!data || !regInfo) return <div className="error">Receipt data not found.</div>;
+  if (loading) return (
+    <div className="receipt-loading">
+      <div className="halftone-bg"></div>
+      <div className="loading-glitch">ENCRYPTING RECEIPT...</div>
+    </div>
+  );
+
+  if (!data || !regInfo) return (
+    <div className="receipt-error">
+      <div className="halftone-bg"></div>
+      <div className="error-glitch">RECEIPT DATA CORRUPTED.</div>
+      <button onClick={() => navigate(-1)} className="tbhx-button">BACK</button>
+    </div>
+  );
 
   return (
     <div className="receipt-container">
+      <div className="halftone-bg"></div>
+
       <div className="receipt-actions">
-        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-        <button className="print-btn-top" onClick={() => window.print()}>🖨️ Print PDF</button>
+        <button className="tbhx-button secondary" onClick={() => navigate(-1)}>&larr; BACK</button>
+        <button className="tbhx-button" onClick={() => window.print()}>PRINT AUTHORIZATION</button>
       </div>
 
       <div className="receipt-card">
         <div className="receipt-header">
           <div className="brand">
             <h2>EZ-EVENT</h2>
-            <p>Official Payment Receipt</p>
+            <p>OFFICIAL AUTHORIZATION RECEIPT</p>
           </div>
           <div className="status-badge-container">
-            <span className="status-badge success">{regInfo.status?.toUpperCase()}</span>
+            <span className="status-badge">{regInfo.status?.toUpperCase()}</span>
           </div>
         </div>
 
         <div className="receipt-section">
-          <label>Event Information</label>
-          <h3 className="event-title">{data.eventName}</h3>
+          <label>MISSION INTEL</label>
+          <h3 className="event-title text-glow">{data.eventName.toUpperCase()}</h3>
           <div className="detail-grid">
             <div className="detail-item">
-              <span>Date</span>
+              <span>DEPLOYMENT DATE</span>
               <p>{new Date(data.date?.seconds * 1000).toLocaleDateString()}</p>
             </div>
             <div className="detail-item">
-              <span>Location</span>
-              <p>{data.address || "Virtual/Campus"}</p>
+              <span>LOCATION SECTOR</span>
+              <p>{data.address?.toUpperCase() || "CAMPUS SECTOR"}</p>
             </div>
           </div>
         </div>
@@ -81,30 +95,30 @@ export default function ReceiptPage() {
         <div className="receipt-divider"></div>
 
         <div className="receipt-section">
-          <label>Payment Summary</label>
+          <label>TRANSACTION PROTOCOL</label>
           <div className="payment-table">
             <div className="payment-row">
-              <span>Transaction ID</span>
+              <span>CRYPTO ID</span>
               <p className="mono">{regInfo.paymentId}</p>
             </div>
             <div className="payment-row">
-              <span>Registration Date</span>
+              <span>REGISTRATION TIMESTAMP</span>
               <p>{new Date(regInfo.registeredAt?.seconds * 1000).toLocaleString()}</p>
             </div>
             <div className="payment-row">
-              <span>Payment Method</span>
-              <p>Stripe / Online Banking</p>
+              <span>GATEWAY</span>
+              <p>STRIPE SECURE LAYER</p>
             </div>
             <div className="payment-row total">
-              <span>Total Paid</span>
+              <span>TOTAL CREDITS</span>
               <p>{regInfo.currency} {regInfo.amountPaid}</p>
             </div>
           </div>
         </div>
 
         <div className="receipt-footer">
-          <p>Thank you for your registration!</p>
-          <small>This is a computer-generated receipt and requires no signature.</small>
+          <p>AUTHORIZATION CONFIRMED</p>
+          <small>DIGITALLY SIGNED. NO PHYSICAL SIGNATURE REQUIRED.</small>
         </div>
       </div>
     </div>

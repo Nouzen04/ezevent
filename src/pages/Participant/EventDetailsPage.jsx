@@ -19,7 +19,7 @@ export default function EventDetailsPage() {
   const isHistoryMode = location.pathname.includes("history") || location.pathname.includes("receipt");
 
   const formatDate = (dateObj) => {
-    if (!dateObj) return "Date not specified";
+    if (!dateObj) return "DATE NOT SPECIFIED";
     if (dateObj.seconds) {
       return new Date(dateObj.seconds * 1000).toLocaleDateString();
     }
@@ -40,9 +40,9 @@ export default function EventDetailsPage() {
           const uniId = rawEvent.universityId;
           const facId = rawEvent.facultyId;
 
-          let categoryDisplay = "Category not specified";
-          let uniDisplay = "University not specified";
-          let facultyDisplay = "Faculty not specified";
+          let categoryDisplay = "SECTOR UNKNOWN";
+          let uniDisplay = "LOCATION UNKNOWN";
+          let facultyDisplay = "FACULTY UNKNOWN";
 
           // 1. Fetch Category
           if (catId) {
@@ -85,7 +85,7 @@ export default function EventDetailsPage() {
 
   const handleRegistration = async () => {
     if (!user) {
-      alert("You must be logged in to register.");
+      alert("UNAUTHORIZED ACCESS. PLEASE LOG IN.");
       return;
     }
 
@@ -104,7 +104,7 @@ export default function EventDetailsPage() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        alert("Server error: " + response.statusText);
+        alert("SYSTEM ERROR: " + response.statusText);
         return;
       }
 
@@ -112,100 +112,114 @@ export default function EventDetailsPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert("Payment system is currently unavailable.");
+        alert("PAYMENT PROTOCOL OFFLINE.");
       }
     } catch (error) {
-      alert("Could not connect to payment server.");
+      alert("CONNECTION FAILURE.");
     }
   };
 
-  
+
   const handleViewReceipt = () => {
     navigate(`/participant/history/receipt/ticket/${id}`);
   };
 
-  if (loading) return <p className="loading-text">Loading event details...</p>;
-  if (!event) return <p className="error-text">Event not found.</p>;
+  if (loading) return (
+    <div className="event-details-loading">
+      <div className="halftone-bg"></div>
+      <div className="loading-glitch">INCOMING DATA...</div>
+    </div>
+  );
+
+  if (!event) return (
+    <div className="event-details-error">
+      <div className="halftone-bg"></div>
+      <div className="error-glitch">SECTOR VOID. EVENT NOT FOUND.</div>
+      <button onClick={() => navigate(-1)} className="tbhx-button">RETURN</button>
+    </div>
+  );
 
   return (
-    <div className="event-details-page-container">
-      <div className="event-details-card">
+    <div className="ed-root">
+      <div className="halftone-bg"></div>
 
-        <div className="top-actions-bar">
-          <button onClick={() => navigate(-1)} className="back-button">
-            ⬅ Back
-          </button>
-        </div>
+      <div className="top-actions-bar">
+        <button onClick={() => navigate(-1)} className="tbhx-button secondary back-button">
+          &larr; BACK
+        </button>
+      </div>
 
-        <h1>{event.eventName}</h1>
+      <div className="ed-header">
+        <h1 className="tbhx-header"><span className="text-glow">{event.eventName}</span></h1>
+        <div className="header-accent"></div>
+      </div>
 
-        <div className="event-content-grid">
-          <div className="main-info">
-            {event.Image && (
-              <img
-                src={event.Image}
-                alt={event.eventName}
-                className="event-image"
-              />
-            )}
-
-            <div className="info-row">
-              <h3>Category</h3>
-              <p>{event.categoryName}</p>
+      <div className="ed-layout">
+        <div className="ed-media-section">
+          {event.Image ? (
+            <div className="ed-image-container">
+              <img src={event.Image} alt={event.eventName} className="ed-image" />
+              <div className="image-glitch-overlay"></div>
             </div>
+          ) : (
+            <div className="ed-image-placeholder">NO VISUAL DATA</div>
+          )}
 
-            <div className="info-row">
-              <h3>Event Name</h3>
-              <p>{event.eventName}</p>
-            </div>
-
-            <div className="info-row">
-              <h3>Date</h3>
-              <p>{formatDate(event.date)}</p>
-            </div>
-
-            <div className="info-row">
-              <h3>Description</h3>
-              <p>{event.description}</p>
-            </div>
-
-            <div className="info-row">
-              <h3>Faculty</h3>
-              <p>{event.facultyName}</p>
-            </div>
-
-            <div className="info-row">
-              <h3>University</h3>
-              <p>{event.universityName}</p>
-            </div>
-
-            <div className="info-row">
-              <h3>Price</h3>
-              <p>{event.price ? `RM ${event.price}` : "Price not specified"}</p>
-            </div>
-
-            <div className="info-row">
-              <h3>Location</h3>
-              <p>{event.address || "Location not specified"}</p>
-            </div>
+          <div className="ed-price-tag tbhx-card">
+            <span className="price-label">ENTRY CREDIT</span>
+            <span className="price-amount text-glow-cyan">
+              {event.price ? `RM ${event.price}` : "FREE"}
+            </span>
           </div>
         </div>
 
-        {isHistoryMode ? (
-          <div className="info-row">
-            <h3>Important Message for Registered Participants</h3>
-            <p>{event.afterRegistrationMessage   || "Location not specified"}</p>
-            <button onClick={handleViewReceipt} className="register-event-button" style={{ backgroundColor: '#283fa7ff' }}>
-              View Official Receipt & Ticket
+        <div className="ed-info-section">
+          <div className="tbhx-card ed-info-card">
+            <div className="ed-row">
+              <span className="ed-label">STATUS</span>
+              <span className="ed-value text-glow">ACTIVE</span>
+            </div>
+            <div className="ed-row">
+              <span className="ed-label">SECTOR</span>
+              <span className="ed-value">{event.categoryName.toUpperCase()}</span>
+            </div>
+            <div className="ed-row">
+              <span className="ed-label">DEPLOYMENT DATE</span>
+              <span className="ed-value">{formatDate(event.date)}</span>
+            </div>
+            <div className="ed-row">
+              <span className="ed-label">LOCATION</span>
+              <span className="ed-value">{event.universityName.toUpperCase()}</span>
+            </div>
+            <div className="ed-row">
+              <span className="ed-label">FACULTY</span>
+              <span className="ed-value">{event.facultyName.toUpperCase()}</span>
+            </div>
+            <div className="ed-row">
+              <span className="ed-label">COORDINATES</span>
+              <span className="ed-value">{event.address || "SECTOR UNKNOWN"}</span>
+            </div>
+          </div>
+
+          <div className="tbhx-card description-card">
+            <span className="ed-label">MISSION OBJECTIVE</span>
+            <p className="ed-description">{event.description}</p>
+          </div>
+
+          {isHistoryMode ? (
+            <div className="tbhx-card message-card">
+              <span className="ed-label">POST-REGISTRATION INTEL</span>
+              <p className="ed-message">{event.afterRegistrationMessage || "NO ADDITIONAL INTEL."}</p>
+              <button onClick={handleViewReceipt} className="tbhx-button ed-action-btn">
+                VIEW TICKET & RECEIPT
+              </button>
+            </div>
+          ) : (
+            <button onClick={handleRegistration} className="tbhx-button ed-action-btn register-now">
+              INITIALIZE REGISTRATION
             </button>
-          </div>
-
-        ) : (
-          <button onClick={handleRegistration} className="register-event-button">
-            Register for Event
-          </button>
-        )}
-
+          )}
+        </div>
       </div>
     </div>
   );
