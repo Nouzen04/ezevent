@@ -17,6 +17,7 @@ const AttendanceList = () => {
     useEffect(() => {
         const fetchAttendance = async () => {
             try {
+                // 1. Get all registrations for this specific event
                 const regQuery = query(collection(db, 'registrations'), where('eventId', '==', id));
                 const regSnap = await getDocs(regQuery);
 
@@ -25,26 +26,48 @@ const AttendanceList = () => {
                         const regId = regDoc.id;
                         const { userId, userEmail } = regDoc.data();
 
-
-                        // Get user name
+                        // 2. Get user name details
                         const userRef = doc(db, 'users', userId);
                         const userSnap = await getDoc(userRef);
                         const name = userSnap.exists() ? userSnap.data().name : 'Unknown';
                         const phoneNumber = userSnap.exists() ? userSnap.data().phoneNumber : 'Unknown';
 
-                        // Get attendance status from subcollection
+                        // 3. Get attendance status from subcollection
                         const attendanceSub = collection(db, 'registrations', regId, 'attendance');
                         const attendanceSnap = await getDocs(attendanceSub);
 
-                        let status = 'unknown';
-                        attendanceSnap.forEach((doc) => {
-                            const data = doc.data();
-                            if (data.eventId === id && data.status) {
-                                status = data.status;
-                            }
-                        });
+                        // Defaults
+                        let statusStr = 'absent';
+                        let checkInTimeStr = '-'; // Default for no time
 
-                        return { name, email: userEmail, absence: status === 'absent', phoneNumber };
+                        if (!attendanceSnap.empty) {
+                            // If a record exists, use the specific status
+                            const data = attendanceSnap.docs[0].data();
+                            
+                            if (data.status) {
+                                statusStr = data.status;
+                            }
+
+                            // Process checkInTime
+                            if (data.checkInTime) {
+                                // Handle Firestore Timestamp or standard Date string
+                                const dateObj = data.checkInTime.toDate ? data.checkInTime.toDate() : new Date(data.checkInTime);
+                                // Format to readable string (e.g. "12/10/2025, 2:30 PM")
+                                checkInTimeStr = dateObj.toLocaleString();
+                            }
+                        }
+
+                        // Determine boolean for the table
+                        const isAbsent = statusStr === 'absent';
+
+                        return { 
+                            name, 
+                            email: userEmail, 
+                            absence: isAbsent, 
+                            statusLabel: statusStr,
+                            checkInTimeLabel: checkInTimeStr, // Added to state
+                            phoneNumber 
+                        };
                     })
                 );
 
@@ -54,14 +77,37 @@ const AttendanceList = () => {
             }
         };
 
-        fetchAttendance();
+        if (id) {
+            fetchAttendance();
+        }
     }, [id]);
 
     // DataTable columns
     const columns = [
         { name: 'NAME', selector: row => row.name, sortable: true },
         { name: 'EMAIL', selector: row => row.email, sortable: true },
-        { name: 'ABSENT', selector: row => (row.absence ? 'YES' : 'NO'), sortable: true },
+        { 
+            name: 'ATTENDANCE STATUS', 
+            selector: row => (row.absence ? 'ABSENT' : 'PRESENT'), 
+            sortable: true,
+            conditionalCellStyles: [
+                {
+                    when: row => row.absence === true,
+                    style: { color: '#ff4d4d', fontWeight: 'bold' }, 
+                },
+                {
+                    when: row => row.absence === false,
+                    style: { color: '#4dff4d', fontWeight: 'bold' }, 
+                },
+            ]
+        },
+        // NEW COLUMN FOR CHECK-IN TIME
+        { 
+            name: 'CHECK-IN TIME', 
+            selector: row => row.checkInTimeLabel, 
+            sortable: true,
+            width: '200px' // Optional: give it a bit more space
+        },
         { name: 'PHONE NUMBER', selector: row => row.phoneNumber, sortable: true },
     ];
 
@@ -84,16 +130,19 @@ const AttendanceList = () => {
     );
 
     // CSV Export Function
-    const safeEventName = eventName.replace(/\s+/g, '_'); // sanitize filename (replace spaces with underscores)
+    const safeEventName = eventName.replace(/\s+/g, '_'); 
 
     function exportToCSV() {
         if (!filteredAttendees.length) return;
 
-        const headers = ['Name', 'Email', 'Absent', 'Phone Number'];
+        // Added Check-In Time to headers
+        const headers = ['Name', 'Email', 'Status', 'Is Absent', 'Check-In Time', 'Phone Number'];
         const rows = filteredAttendees.map(a => [
             a.name,
             a.email,
+            a.statusLabel, 
             a.absence ? 'Yes' : 'No',
+            a.checkInTimeLabel, // Added to CSV rows
             a.phoneNumber,
         ]);
 

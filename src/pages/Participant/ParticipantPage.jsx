@@ -65,7 +65,7 @@ export default function ParticipantPage() {
         <EventsList
           collectionName="events"
           onClickAction={handleClick}
-          ActionText="INITIALIZE ACCESS"
+          ActionText="VIEW DETAILS"
           userRole="participant"
           userId={user ? user.uid : ""}
           categoryFilter={selectedCategory}

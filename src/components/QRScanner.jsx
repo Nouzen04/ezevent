@@ -146,7 +146,7 @@ const AttendanceScanner = () => {
             <div className="status-icon">📷</div>
             <strong>CAMERA OFFLINE</strong>
             <p className="status-desc">
-              PLEASE MANUALLY ENABLE CAMERA ACCESS PROTOCOL.
+              PLEASE ENABLE CAMERA ACCESS.
             </p>
             <button onClick={() => window.location.reload()} className="tbhx-button">
               REBOOT SCANNER
@@ -159,7 +159,7 @@ const AttendanceScanner = () => {
           <div className="start-scan-container">
             <div className="start-icon">📷</div>
             <p className="start-text">
-              INITIALIZE SCANNING PROTOCOL FOR EVENT ACCESS.
+              SCAN QR FOR EVENT ATTENDANCE
             </p>
             <button
               onClick={() => setIsCameraOpen(true)}
@@ -201,7 +201,7 @@ const AttendanceScanner = () => {
 
           {status === 'success' && (
             <div className="status-box success">
-              <strong>PROTOCOL SUCCESS</strong>
+              <strong>ATTENDANCE REGISTRATION SUCCESS</strong>
               <p>{message}</p>
               <button onClick={navigateHistory} className="tbhx-button">
                 HISTORY LOG
@@ -211,7 +211,7 @@ const AttendanceScanner = () => {
 
           {status === 'error' && (
             <div className="status-box error">
-              <strong>PROTOCOL FAILURE</strong>
+              <strong>ATTENDANCE REGISTRATION FAILED</strong>
               <p className="error-detail">{message}</p>
               <button onClick={resetScanner} className="tbhx-button">
                 RETRY SCAN

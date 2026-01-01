@@ -41,7 +41,7 @@ export default function EventHistoryPage() {
         <EventsList
           collectionName="events"
           onClickAction={handleClick}
-          ActionText="INITIALIZE INTEL"
+          ActionText="VIEW DETAILS"
           userRole="participant"
           userId={user ? user.uid : ""}
           timeFilter={filterType}

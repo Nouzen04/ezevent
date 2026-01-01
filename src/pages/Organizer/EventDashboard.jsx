@@ -4,7 +4,7 @@ import { collection, query, where, getDocs, orderBy, doc, getDoc } from 'firebas
 import { db, auth } from '../../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'react-router-dom';
-import { useNavigate, NavLink, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function EventDashboard({ }) {
     const { id } = useParams(); // Matches route parameter :id
@@ -24,6 +24,7 @@ export default function EventDashboard({ }) {
     const [viewMode, setViewMode] = useState('dashboard'); // Used for button toggle
 
     // --- Data Calculation (Using current state values) ---
+    // Note: This derived state is for display only; the actual calc happens in fetchAttendanceStats
     const totalParticipants = attendanceStats.totalAttendees + attendanceStats.totalAbsence;
     const currentAttendanceRate = totalParticipants > 0
         ? ((attendanceStats.totalAttendees / totalParticipants) * 100).toFixed(2) + "%"
@@ -46,39 +47,40 @@ export default function EventDashboard({ }) {
     }, [id]);
 
     async function fetchAttendanceStats(currentEventId) {
-        let presentCount = 0;
-        let absentCount = 0;
-
         try {
+            // 1. Get all registrations for this event
             const regQuery = query(collection(db, 'registrations'), where('eventId', '==', currentEventId));
             const regSnap = await getDocs(regQuery);
 
-            for (const regDoc of regSnap.docs) {
+            // 2. Check attendance subcollection for each registration in parallel
+            const statsPromises = regSnap.docs.map(async (regDoc) => {
                 const attendanceSub = collection(db, 'registrations', regDoc.id, 'attendance');
                 const attendanceSnap = await getDocs(attendanceSub);
 
-                let statusFound = false;
-                attendanceSnap.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.eventId === currentEventId && data.status === 'present') {
-                        presentCount++;
-                        statusFound = true;
-                    }
-                });
-                if (!statusFound) {
-                    absentCount++;
-                }
-            }
+                // Check if ANY document in the subcollection has status 'present'
+                // We do NOT check eventId here because the subcollection doc 
+                // doesn't have it (and the parent is already filtered by eventId).
+                const isPresent = attendanceSnap.docs.some(doc => doc.data().status === 'present');
 
-            const totalParticipants = presentCount + absentCount;
-            const attendancePercentage = totalParticipants > 0
-                ? ((presentCount / totalParticipants) * 100).toFixed(2) + "%"
+                return isPresent ? 'present' : 'absent';
+            });
+
+            // 3. Resolve all checks
+            const results = await Promise.all(statsPromises);
+
+            // 4. Calculate totals
+            const presentCount = results.filter(status => status === 'present').length;
+            const absentCount = results.filter(status => status === 'absent').length;
+
+            const total = presentCount + absentCount;
+            const percentage = total > 0
+                ? ((presentCount / total) * 100).toFixed(2) + "%"
                 : "0.00%";
 
             setAttendanceStats({
                 totalAttendees: presentCount,
                 totalAbsence: absentCount,
-                attendancePercentage: attendancePercentage,
+                attendancePercentage: percentage,
             });
 
         } catch (error) {

@@ -216,7 +216,7 @@ export default function EventDetailsPage() {
             </div>
           ) : (
             <button onClick={handleRegistration} className="tbhx-button ed-action-btn register-now">
-              INITIALIZE REGISTRATION
+              REGISTER FOR EVENT
             </button>
           )}
         </div>
