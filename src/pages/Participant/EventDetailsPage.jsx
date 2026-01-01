@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { db } from "../../firebase";
 import "../../css/EventDetailsPage.css";
@@ -12,6 +12,7 @@ export default function EventDetailsPage() {
 
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [registrationCount, setRegistrationCount] = useState(0); // New State for count
 
   const { user } = useAuth();
 
@@ -30,11 +31,17 @@ export default function EventDetailsPage() {
     const fetchEvent = async () => {
       setLoading(true);
       try {
+        // 1. Fetch Event Details
         const eventRef = doc(db, "events", id);
         const eventSnap = await getDoc(eventRef);
 
         if (eventSnap.exists()) {
           const rawEvent = { id: eventSnap.id, ...eventSnap.data() };
+
+          // 2. Fetch Registration Count for this Event
+          const regQuery = query(collection(db, "registrations"), where("eventId", "==", id));
+          const regSnap = await getDocs(regQuery);
+          setRegistrationCount(regSnap.size); // Set the count based on number of docs
 
           const catId = rawEvent.categoryId;
           const uniId = rawEvent.universityId;
@@ -44,19 +51,19 @@ export default function EventDetailsPage() {
           let uniDisplay = "LOCATION UNKNOWN";
           let facultyDisplay = "FACULTY UNKNOWN";
 
-          // 1. Fetch Category
+          // Fetch Category
           if (catId) {
             const catSnap = await getDoc(doc(db, "eventCategories", catId));
             if (catSnap.exists()) categoryDisplay = catSnap.data().categoryName;
           }
 
-          // 2. Fetch University
+          // Fetch University
           if (uniId) {
             const uniSnap = await getDoc(doc(db, "universities", uniId));
             if (uniSnap.exists()) uniDisplay = uniSnap.data().universityName;
           }
 
-          // 3. Fetch Faculty
+          // Fetch Faculty
           if (uniId && facId) {
             const facRef = doc(db, "universities", uniId, "faculties", facId);
             const facSnap = await getDoc(facRef);
@@ -83,9 +90,19 @@ export default function EventDetailsPage() {
     fetchEvent();
   }, [id]);
 
+  // Determine if event is full
+  const maxParticipants = event?.numOfParticipants || 0;
+  const isFull = maxParticipants > 0 && registrationCount >= maxParticipants;
+
   const handleRegistration = async () => {
     if (!user) {
       alert("UNAUTHORIZED ACCESS. PLEASE LOG IN.");
+      return;
+    }
+
+    // BLOCKER: Check if full before proceeding
+    if (isFull) {
+      alert("REGISTRATION FAILED: EVENT CAPACITY REACHED.");
       return;
     }
 
@@ -177,14 +194,23 @@ export default function EventDetailsPage() {
           <div className="tbhx-card ed-info-card">
             <div className="ed-row">
               <span className="ed-label">STATUS</span>
-              <span className="ed-value text-glow">ACTIVE</span>
+              {/* Dynamic Status Update */}
+              <span className={`ed-value ${isFull ? 'text-glow-red' : 'text-glow'}`}>
+                {isFull ? "SOLD OUT" : "ACTIVE"}
+              </span>
             </div>
             <div className="ed-row">
-              <span className="ed-label">SECTOR</span>
+              <span className="ed-label">SLOTS TAKEN</span>
+              <span className="ed-value">
+                {registrationCount} / {event.numOfParticipants}
+              </span>
+            </div>
+            <div className="ed-row">
+              <span className="ed-label">CATEGORY</span>
               <span className="ed-value">{event.categoryName.toUpperCase()}</span>
             </div>
             <div className="ed-row">
-              <span className="ed-label">DEPLOYMENT DATE</span>
+              <span className="ed-label">EVENT DATE</span>
               <span className="ed-value">{formatDate(event.date)}</span>
             </div>
             <div className="ed-row">
@@ -196,13 +222,13 @@ export default function EventDetailsPage() {
               <span className="ed-value">{event.facultyName.toUpperCase()}</span>
             </div>
             <div className="ed-row">
-              <span className="ed-label">COORDINATES</span>
+              <span className="ed-label">ADDRESS</span>
               <span className="ed-value">{event.address || "SECTOR UNKNOWN"}</span>
             </div>
           </div>
 
           <div className="tbhx-card description-card">
-            <span className="ed-label">MISSION OBJECTIVE</span>
+            <span className="ed-label">DESCRIPTION</span>
             <p className="ed-description">{event.description}</p>
           </div>
 
@@ -215,8 +241,14 @@ export default function EventDetailsPage() {
               </button>
             </div>
           ) : (
-            <button onClick={handleRegistration} className="tbhx-button ed-action-btn register-now">
-              REGISTER FOR EVENT
+            // Logic to disable button if full
+            <button 
+              onClick={handleRegistration} 
+              disabled={isFull}
+              className={`tbhx-button ed-action-btn ${isFull ? 'disabled-btn' : 'register-now'}`}
+              style={isFull ? { opacity: 0.5, cursor: 'not-allowed', borderColor: '#555' } : {}}
+            >
+              {isFull ? "EVENT FULL / SOLD OUT" : "REGISTER FOR EVENT"}
             </button>
           )}
         </div>

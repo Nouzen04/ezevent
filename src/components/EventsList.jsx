@@ -94,7 +94,8 @@ export default function EventsList({
 
                         const currentDate = new Date();
                         
-                        eventsData = rawEvents.filter(event => {
+                        // 1. Initial Synchronous Filter (Status, Date, Category, Not Joined)
+                        const validCandidates = rawEvents.filter(event => {
                             // Check A: Event Status MUST be Accepted
                             if (event.status !== 'Accepted') return false; 
 
@@ -118,6 +119,29 @@ export default function EventsList({
 
                             return true;
                         });
+
+                        // 2. Asynchronous Capacity Check
+                        // We map the candidates to promises to check their specific registration counts
+                        const finalEvents = await Promise.all(validCandidates.map(async (event) => {
+                            const maxParticipants = event.numOfParticipants ? Number(event.numOfParticipants) : 0;
+
+                            // If unlimited or invalid limit, we keep it
+                            if (maxParticipants <= 0) return event;
+
+                            // Query registrations for this specific event to get the count
+                            const countQuery = query(
+                                collection(db, "registrations"), 
+                                where("eventId", "==", event.id)
+                            );
+                            const countSnapshot = await getDocs(countQuery);
+                            const currentCount = countSnapshot.size;
+
+                            // Only return event if current registrations are LESS than the limit
+                            return currentCount < maxParticipants ? event : null;
+                        }));
+
+                        // Filter out the nulls (full events)
+                        eventsData = finalEvents.filter(e => e !== null);
                     }
 
                     // Logic: Admin (Show all)
@@ -140,7 +164,7 @@ export default function EventsList({
         };
 
         fetchEvents();
-    }, [collectionName, userId, userRole, location.pathname, categoryFilter, timeFilter]); // Added both filters to dependencies
+    }, [collectionName, userId, userRole, location.pathname, categoryFilter, timeFilter]); 
 
     if (loading) return <p>Loading events...</p>;
 

@@ -125,6 +125,12 @@ export default function CreateEvent() {
             return;
         }
 
+        if (Number(form.numOfParticipants) <= 0) {
+        alert('Max participants must be at least 1.');
+        setSubmitting(false);
+        return;
+    }
+
         // UPDATE 4: Validate that date is not in the past
         const selectedDate = new Date(form.date);
         const currentDate = new Date();
@@ -339,7 +345,7 @@ export default function CreateEvent() {
                     <span className="ce-label">DESCRIPTION</span>
                     <textarea
                         className="ce-textarea"
-                        placeholder="EVENT MISSION AND DETAILS"
+                        placeholder="EVENT DESCRIPTION AND DETAILS"
                         value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
                         required
@@ -363,7 +369,8 @@ export default function CreateEvent() {
                         <input
                             className="ce-input"
                             type="number"
-                            placeholder="0"
+                            min="1"
+                            placeholder="1"
                             value={form.numOfParticipants}
                             onChange={(e) => setForm({ ...form, numOfParticipants: e.target.value })}
                             required

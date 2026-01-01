@@ -98,11 +98,11 @@ export default function ReceiptPage() {
           <label>TRANSACTION PROTOCOL</label>
           <div className="payment-table">
             <div className="payment-row">
-              <span>CRYPTO ID</span>
+              <span>PAYMENT ID</span>
               <p className="mono">{regInfo.paymentId}</p>
             </div>
             <div className="payment-row">
-              <span>REGISTRATION TIMESTAMP</span>
+              <span>REGISTRATION DATE</span>
               <p>{new Date(regInfo.registeredAt?.seconds * 1000).toLocaleString()}</p>
             </div>
             <div className="payment-row">
