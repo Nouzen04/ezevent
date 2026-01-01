@@ -45,16 +45,23 @@ export default function KPICards({ metrics }) {
 
   return (
     <div className="kpi-cards-container">
-      {kpiData.map((kpi, index) => (
-        <div key={index} className="kpi-card" style={{ borderTopColor: kpi.color }}>
-          <div className="kpi-content">
-            <h3 className="kpi-title">{kpi.title}</h3>
-            <p className="kpi-value" style={{ color: kpi.color }}>
-              {kpi.value.toLocaleString()}
-            </p>
+      {kpiData.map((kpi, index) => {
+        const isLastTwo = index >= kpiData.length - 2;
+        return (
+          <div 
+            key={index} 
+            className={`kpi-card ${isLastTwo ? 'kpi-card-last-row' : ''}`} 
+            style={{ borderTopColor: kpi.color }}
+          >
+            <div className="kpi-content">
+              <h3 className="kpi-title">{kpi.title}</h3>
+              <p className="kpi-value" style={{ color: kpi.color }}>
+                {kpi.value.toLocaleString()}
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
