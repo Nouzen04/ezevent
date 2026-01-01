@@ -86,7 +86,7 @@ export default function SignUpPage() {
                     <p className="logo-text">EZEvent</p>
                 </div>
 
-                <h2>JOIN THE FUTURE</h2>
+                <h2>REGISTER ACCOUNT</h2>
                 {error && <div className="error-message">{error}</div>}
 
                 <form onSubmit={handleSignUp}>

@@ -78,7 +78,7 @@ export default function LoginPage() {
                 </form>
 
                 <div className="auth-footer">
-                    <p>DON'T HAVE AN ACCOUNT? <Link to="/signup">JOIN THE FUTURE</Link></p>
+                    <p>DON'T HAVE AN ACCOUNT? <Link to="/signup">REGISTER HERE</Link></p>
                 </div>
             </div>
         </div>

@@ -176,3 +176,9 @@
         font-size: 2rem;
     }
 }
+
+.form-group select option {
+  background-color: #1a1a1a; /* Dark background */
+  color: white;              /* White text */
+  padding: 10px;
+}
