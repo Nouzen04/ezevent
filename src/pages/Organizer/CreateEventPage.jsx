@@ -21,6 +21,8 @@ export default function CreateEvent() {
     const [qrData, setQrData] = useState(null);
     const [pendingQrId, setPendingQrId] = useState(null);
     const [pendingEventId, setPendingEventId] = useState(null);
+    const [organizerStatus, setOrganizerStatus] = useState(null);
+    const [loadingStatus, setLoadingStatus] = useState(true);
 
     // Data State
     const [universities, setUniversities] = useState([]);
@@ -39,6 +41,34 @@ export default function CreateEvent() {
         price: '',
         numOfParticipants: ''
     });
+
+    // --- 0. Check Organizer Verification Status ---
+    useEffect(() => {
+        const checkOrganizerStatus = async () => {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    setLoadingStatus(false);
+                    return;
+                }
+
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const verifiedStatus = userData.organizer?.verified || userData.organizer?.status || 'Pending';
+                    setOrganizerStatus(verifiedStatus);
+                } else {
+                    setOrganizerStatus('Pending');
+                }
+            } catch (error) {
+                console.error("Error checking organizer status:", error);
+                setOrganizerStatus('Pending');
+            } finally {
+                setLoadingStatus(false);
+            }
+        };
+        checkOrganizerStatus();
+    }, []);
 
     // --- 1. Fetch Universities & Categories on Component Mount ---
     useEffect(() => {
@@ -248,6 +278,49 @@ export default function CreateEvent() {
         } catch (e) {
             console.error('Failed uploading QR to storage:', e);
         }
+    }
+
+    // Show loading state while checking status
+    if (loadingStatus) {
+        return (
+            <div className="ce-root">
+                <div className="halftone-bg"></div>
+                <div style={{ textAlign: 'center', padding: '3rem', color: 'white' }}>
+                    <h2>Loading...</h2>
+                </div>
+            </div>
+        );
+    }
+
+    // Show message if organizer status is Pending or Declined
+    if (organizerStatus === 'Pending' || organizerStatus === 'Declined') {
+        return (
+            <div className="ce-root">
+                <div className="halftone-bg"></div>
+                <header className="ce-header">
+                    <h1 className="tbhx-header">CREATE <span className="text-glow">EVENT</span></h1>
+                </header>
+                <div style={{ 
+                    textAlign: 'center', 
+                    padding: '3rem', 
+                    color: 'white',
+                    maxWidth: '600px',
+                    margin: '2rem auto',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 64, 64, 0.3)',
+                    borderRadius: '8px'
+                }}>
+                    <h2 style={{ color: 'var(--primary-red)', marginBottom: '1rem' }}>
+                        {organizerStatus === 'Pending' ? 'Verification Pending' : 'Access Denied'}
+                    </h2>
+                    <p style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
+                        {organizerStatus === 'Pending' 
+                            ? 'Your organizer account is currently pending verification. Please wait for admin approval before creating events.'
+                            : 'Your organizer account has been declined. Please contact the administrator for more information.'}
+                    </p>
+                </div>
+            </div>
+        );
     }
 
     return (
