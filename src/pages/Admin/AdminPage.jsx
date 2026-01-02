@@ -1,9 +1,11 @@
-import React from 'react'
+import React from 'react';
+import '../../css/AdminPage.css';
 
 export default function AdminPage() {
   return (
-    <div>
-      <h1>Add dashboard here</h1>
+    <div className="admin-content">
+      <h1>Admin Dashboard</h1>
+      <p style={{ color: '#ffffff', marginTop: '1rem' }}>Welcome to the Admin Dashboard. Navigate using the sidebar to access different management functions.</p>
     </div>
-  )
+  );
 }
